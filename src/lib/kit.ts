@@ -4,6 +4,7 @@ import { localizationImportLoaderFactory, LocalizationService, type ILocalizatio
 export type LocalizationKitServiceConfig = {
   readonly browser: boolean;
   readonly contextName: string;
+  readonly localizationsPath: string;
   readonly localizationImports: Record<string, () => Promise<{ default: LocalizationLoaderInput }>>;
 };
 
@@ -68,7 +69,7 @@ export interface ILocalizationKitService extends ILocalizationService {
   // Additional factory methods
   configure(config: LocalizationKitServiceConfig): void;
   setCommonServiceConfig(config: LocalizationServiceConfig): void;
-  importLoaderFactory(localizationsPath: string): LocalizationImportLoaderFactory;
+  importLoaderFactory(): LocalizationImportLoaderFactory;
   setContextService(service: ILocalizationService): void;
   initialLoadLocalizations(config: Partial<LocalizationServiceConfig>, pathname: string): Promise<ILocalizationService>;
 }
@@ -100,8 +101,8 @@ export const LocalizationKitService: ILocalizationKitService = {
   setCommonServiceConfig(config: LocalizationServiceConfig): void {
     LocalizationKitFactory.setCommonServiceConfig(config);
   },
-  importLoaderFactory(localizationsPath: string) {
-    return localizationImportLoaderFactory(localizationsPath, LocalizationKitFactory.config.localizationImports);
+  importLoaderFactory() {
+    return localizationImportLoaderFactory(LocalizationKitFactory.config.localizationsPath, LocalizationKitFactory.config.localizationImports);
   },
   setContextService(service: ILocalizationService): void {
     LocalizationKitFactory.setContextService(service);
