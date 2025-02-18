@@ -7,7 +7,7 @@ Localization for svelte 5 kit.
 - SSR enabled
 - lazy loading
 
-Not all tested yet, no automated tests yet.
+No automation yet.
 
 # Localizations folder `src/lib/localization`
 `index.ts`
