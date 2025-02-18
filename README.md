@@ -2,8 +2,6 @@
 Inspired by https://github.com/sveltekit-i18n/lib.
 
 Written for Svelte 5 reactivity.
-
-Localization for svelte 5 kit.
 - SSR enabled
 - lazy loading
 
@@ -26,9 +24,10 @@ const localizationImports = import.meta.glob([
 LocalizationKitService.configure({
   browser,
   contextName: 'i18n',
+  localizationsPath,
   localizationImports,
 });
-const importLoaderFactory = LocalizationKitService.importLoaderFactory(localizationsPath);
+const importLoaderFactory = LocalizationKitService.importLoaderFactory();
 LocalizationKitService.setCommonServiceConfig({
   loaders: [
     {
