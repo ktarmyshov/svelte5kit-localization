@@ -4,6 +4,7 @@ Inspired by https://github.com/sveltekit-i18n/lib.
 Written for Svelte 5 reactivity.
 - SSR enabled
 - lazy loading
+- some DX improvements
 
 No automation yet.
 
