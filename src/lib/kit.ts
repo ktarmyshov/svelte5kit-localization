@@ -81,7 +81,8 @@ export class LocalizationKitFactory {
 }
 
 export interface ILocalizationKitService extends ILocalizationService {
-  // Additional factory methods
+  // Additional service methods
+  readonly availableLocales: Locale[];
   configure(config: LocalizationKitServiceConfig): void;
   setCommonServiceConfig(config: LocalizationServiceConfig): void;
   importLoaderFactory(): LocalizationImportLoaderFactory;
@@ -112,7 +113,18 @@ export const LocalizationKitService: ILocalizationKitService = {
   getPSText(prefix: string | undefined, suffix?: string): LocalizationTextFunction {
     return LocalizationKitFactory.getContextService().getPSText(prefix, suffix);
   },
-  // Additional factory methods
+  // Additional service methods
+  get availableLocales(): Locale[] {
+    // Scan the import map for available locales
+    return Array.from(
+      new Set(
+        Object.keys(LocalizationKitFactory.config.localizationImports).map(
+          (key) =>
+            key.substring(LocalizationKitFactory.config.localizationsPath.length + 1).split('/')[0]
+        )
+      )
+    );
+  },
   configure(config: LocalizationKitServiceConfig): void {
     LocalizationKitFactory.configure(config);
   },
