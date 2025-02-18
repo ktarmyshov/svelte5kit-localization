@@ -123,14 +123,14 @@ load(...
 # Somewhere in your `myComponent.svelte`
 
 ```ts
-  import { getLocalizationPSText, localizationText, setActiveLocale } from '$lib/localization';
+  import { getLocalizedPSText, localizedText, setActiveLocale } from '$lib/localization';
   ....
-  const localizationTitle = getLocalizationPSText('navigation', 'title');
+  const localizedTitle = getLocalizedPSText('navigation', 'title');
   ...
 
   setActiveLocale('de'); // Will trigger loading (if not loaded already) for the last pathname, which was loaded
 
   ...
-  <span>{localizationTitle('myelement')}</span> <!-- = localizationText('navigation.myelement.title') -->
-  <span>{localizationText('navigation.myelement.title')}</span> <!-- same as above -->
+  <span>{localizedTitle('myelement')}</span> <!-- = localizedText('navigation.myelement.title') -->
+  <span>{localizedText('navigation.myelement.title')}</span> <!-- same as above -->
 ```
