@@ -1,4 +1,4 @@
-import { SvelteMap } from "svelte/reactivity";
+import { SvelteMap } from 'svelte/reactivity';
 
 export type LocalizationTextFunction = (key: string, comment?: string) => string;
 type LocalizationMap = Map<string, string>;
@@ -10,7 +10,9 @@ export type LocalizationLoaderInput<V = string> = {
   [K in Exclude<string, 'comment'>]: LocalizationLoaderInput<V> | V;
 };
 
-export type LocalizationLoaderFunction = (locale: Locale) => Promise<LocalizationLoaderInput | undefined>;
+export type LocalizationLoaderFunction = (
+  locale: Locale
+) => Promise<LocalizationLoaderInput | undefined>;
 export type LocalizationLoaderModule = {
   /**
    * Represents the translation namespace. This key is used as a translation prefix so it should be module-unique. You can access your translation later using `$t('key.yourTranslation')`. It shouldn't include `.` (dot) character.
@@ -18,12 +20,12 @@ export type LocalizationLoaderModule = {
   key: Key;
   /**
    * Function returning a `Promise` with translation data. You can use it to load files locally, fetch it from your API etc...
-  */
+   */
   loader: LocalizationLoaderFunction;
   /**
-  * Define routes this loader should be triggered for. You can use Regular expressions too. For example `[/\/.ome/]` will be triggered for `/home` and `/rome` route as well (but still only once). Leave this `undefined` in case you want to load this module with any route (useful for common translations).
-  * Regex or prefix of the route
-  */
+   * Define routes this loader should be triggered for. You can use Regular expressions too. For example `[/\/.ome/]` will be triggered for `/home` and `/rome` route as well (but still only once). Leave this `undefined` in case you want to load this module with any route (useful for common translations).
+   * Regex or prefix of the route
+   */
   routes?: Route[];
 };
 
@@ -70,24 +72,26 @@ export class LocalizationService implements ILocalizationService {
     return this.#activeLocale;
   }
   setActiveLocale(locale: Locale): void {
-    if (this.#activeLocale === locale)
-      return;
+    if (this.#activeLocale === locale) return;
     this.#activeLocale = locale;
     if (!this.#locales.includes(locale)) {
       this.#locales.push(locale);
     }
     if (this.#lastLoadedPathname) {
-      this.#logger?.debug(`Reloading localizations for locale ${locale} and pathname ${this.#lastLoadedPathname}`);
+      this.#logger?.debug(
+        `Reloading localizations for locale ${locale} and pathname ${this.#lastLoadedPathname}`
+      );
       this.loadLocalizations(this.#lastLoadedPathname);
     }
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   text(key: string, comment?: string): string {
-    if (!this.#activeLocale)
-      return key;
+    if (!this.#activeLocale) return key;
     const text = this.#localizations.get(this.#activeLocale)?.get(key);
     if (!text) {
-      this.#logger?.debug(`Translation not found for key neither in currently active locale ${this.activeLocale} of ${this.#locales}: ${key}`);
+      this.#logger?.debug(
+        `Translation not found for key neither in currently active locale ${this.activeLocale} of ${this.#locales}: ${key}`
+      );
     }
     return text || key;
   }
@@ -99,16 +103,14 @@ export class LocalizationService implements ILocalizationService {
     };
   }
   async loadLocalizations(pathname: string): Promise<void> {
-    if (pathname === '')
-      throw new Error('Pathname must not be empty');
+    if (pathname === '') throw new Error('Pathname must not be empty');
     // Do not react to locale changes in this method
     const loadLocales = this.#activeLocale ? [this.#activeLocale] : this.#locales;
     // Get relevant loaders
     const loaders = this.getRelevantLoaders(pathname);
     for (const loader of loaders) {
       for (const loadLocale of loadLocales) {
-        if (this.#executedLoaders.get(loadLocale)?.has(loader))
-          continue;
+        if (this.#executedLoaders.get(loadLocale)?.has(loader)) continue;
         let localeExecutedLoaders = this.#executedLoaders.get(loadLocale);
         if (!localeExecutedLoaders) {
           localeExecutedLoaders = new Set([loader]);
@@ -119,7 +121,9 @@ export class LocalizationService implements ILocalizationService {
         try {
           const data = await loader.loader(loadLocale);
           if (!data) {
-            this.#logger?.debug(`No data loaded for locale ${loadLocale} and loader ${loader.key} [${loader.routes ?? '/*'}]`);
+            this.#logger?.debug(
+              `No data loaded for locale ${loadLocale} and loader ${loader.key} [${loader.routes ?? '/*'}]`
+            );
             continue;
           } else if (this.#activeLocale === undefined) {
             this.setActiveLocale(loadLocale);
@@ -137,7 +141,9 @@ export class LocalizationService implements ILocalizationService {
           // Successfully loaded, no need to try other locales
           break;
         } catch (error) {
-          this.#logger?.debug(`Failed to load localization for locale ${loadLocale} and loader ${loader.key}/${loader.routes ?? 'all'}: ${error}`);
+          this.#logger?.debug(
+            `Failed to load localization for locale ${loadLocale} and loader ${loader.key}/${loader.routes ?? 'all'}: ${error}`
+          );
         }
       }
       this.#lastLoadedPathname = pathname;
@@ -145,19 +151,23 @@ export class LocalizationService implements ILocalizationService {
   }
 
   private getRelevantLoaders(pathname: string): LocalizationLoaderModule[] {
-    return this.#config.loaders?.filter((loader) => {
-      if (!loader.routes || loader.routes.length === 0)
-        return true;
-      return loader.routes?.some((route) => {
-        if (typeof route === 'string') {
-          return pathname.startsWith(route);
-        }
-        return route.test(pathname);
-      });
-    }) || [];
+    return (
+      this.#config.loaders?.filter((loader) => {
+        if (!loader.routes || loader.routes.length === 0) return true;
+        return loader.routes?.some((route) => {
+          if (typeof route === 'string') {
+            return pathname.startsWith(route);
+          }
+          return route.test(pathname);
+        });
+      }) || []
+    );
   }
 
-  private flattenLocalizationWithPrefix(prefixKey: Key | undefined, localization: LocalizationLoaderInput): LocalizationMap {
+  private flattenLocalizationWithPrefix(
+    prefixKey: Key | undefined,
+    localization: LocalizationLoaderInput
+  ): LocalizationMap {
     const flatLocalization: LocalizationMap = this.flattenLocalization(localization);
     const prefix = prefixKey || prefixKey == '' ? `${prefixKey}.` : '';
     const result: LocalizationMap = new SvelteMap();
@@ -187,14 +197,16 @@ export class LocalizationService implements ILocalizationService {
 export type LocalizationImportLoaderInput = { default: LocalizationLoaderInput };
 export type LocalizationImports = Record<string, () => Promise<LocalizationImportLoaderInput>>;
 export type LocalizationImportLoaderFactory = (importPath: string) => LocalizationLoaderFunction;
-export function localizationImportLoaderFactory(localizationsPath: string, importLocalizations: LocalizationImports): LocalizationImportLoaderFactory {
+export function localizationImportLoaderFactory(
+  localizationsPath: string,
+  importLocalizations: LocalizationImports
+): LocalizationImportLoaderFactory {
   return (importPath: string): LocalizationLoaderFunction => {
     return async (locale: Locale) => {
       const importLocalizationPath = `${localizationsPath}/${locale}/${importPath}`;
       const importFunc = importLocalizations[importLocalizationPath];
-      if (!importFunc)
-        return undefined;
-      const data = await importFunc() as LocalizationImportLoaderInput;
+      if (!importFunc) return undefined;
+      const data = (await importFunc()) as LocalizationImportLoaderInput;
       return data.default;
     };
   };

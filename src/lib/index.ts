@@ -5,7 +5,7 @@ export {
   type ILocalizationKitService,
   type LocalizationKitServiceConfig,
   type LocalizationKitServiceContext
-} from "./kit.js";
+} from './kit.js';
 export {
   localizationImportLoaderFactory,
   LocalizationService,
@@ -19,8 +19,5 @@ export {
   type LocalizationLoaderModule,
   type LocalizationServiceConfig,
   type LocalizationTextFunction
-} from "./service.svelte.js";
-export {
-  extractLocales
-} from "./util.js";
-
+} from './service.svelte.js';
+export { extractLocales } from './util.js';

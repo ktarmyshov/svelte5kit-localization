@@ -1,5 +1,14 @@
-import { getContext, setContext } from "svelte";
-import { localizationImportLoaderFactory, LocalizationService, type ILocalizationService, type Locale, type LocalizationImportLoaderFactory, type LocalizationLoaderInput, type LocalizationServiceConfig, type LocalizationTextFunction } from "./service.svelte";
+import { getContext, setContext } from 'svelte';
+import {
+  localizationImportLoaderFactory,
+  LocalizationService,
+  type ILocalizationService,
+  type Locale,
+  type LocalizationImportLoaderFactory,
+  type LocalizationLoaderInput,
+  type LocalizationServiceConfig,
+  type LocalizationTextFunction
+} from './service.svelte';
 
 export type LocalizationKitServiceConfig = {
   readonly browser: boolean;
@@ -31,7 +40,9 @@ export class LocalizationKitFactory {
   }
   public static get commonServiceConfig(): LocalizationServiceConfig {
     if (!LocalizationKitFactory.__commonServiceConfig) {
-      throw new Error('Localization Service Factory Common config not initialized, use setCommonServiceConfig() first');
+      throw new Error(
+        'Localization Service Factory Common config not initialized, use setCommonServiceConfig() first'
+      );
     }
     return LocalizationKitFactory.__commonServiceConfig;
   }
@@ -44,7 +55,9 @@ export class LocalizationKitFactory {
     }
     if (!this.__instance) {
       if (!config) {
-        throw new Error(' Localization service is not initialized, ServiceConfig is required in browser environment when first initializing');
+        throw new Error(
+          ' Localization service is not initialized, ServiceConfig is required in browser environment when first initializing'
+        );
       }
       this.__instance = new LocalizationService(config);
     }
@@ -52,7 +65,9 @@ export class LocalizationKitFactory {
   }
   public static getContextService(config?: LocalizationServiceConfig): ILocalizationService {
     if (!this.config.browser) {
-      const service = getContext<LocalizationKitServiceContext | undefined>(this.config.contextName)?.service();
+      const service = getContext<LocalizationKitServiceContext | undefined>(
+        this.config.contextName
+      )?.service();
       if (!service) {
         throw new Error(`Localization service not found in context ${this.config.contextName}`);
       }
@@ -71,7 +86,10 @@ export interface ILocalizationKitService extends ILocalizationService {
   setCommonServiceConfig(config: LocalizationServiceConfig): void;
   importLoaderFactory(): LocalizationImportLoaderFactory;
   setContextService(service: ILocalizationService): void;
-  initialLoadLocalizations(config: Partial<LocalizationServiceConfig>, pathname: string): Promise<ILocalizationService>;
+  initialLoadLocalizations(
+    config: Partial<LocalizationServiceConfig>,
+    pathname: string
+  ): Promise<ILocalizationService>;
 }
 
 export const LocalizationKitService: ILocalizationKitService = {
@@ -102,12 +120,18 @@ export const LocalizationKitService: ILocalizationKitService = {
     LocalizationKitFactory.setCommonServiceConfig(config);
   },
   importLoaderFactory() {
-    return localizationImportLoaderFactory(LocalizationKitFactory.config.localizationsPath, LocalizationKitFactory.config.localizationImports);
+    return localizationImportLoaderFactory(
+      LocalizationKitFactory.config.localizationsPath,
+      LocalizationKitFactory.config.localizationImports
+    );
   },
   setContextService(service: ILocalizationService): void {
     LocalizationKitFactory.setContextService(service);
   },
-  async initialLoadLocalizations(config: Partial<LocalizationServiceConfig>, pathname: string): Promise<ILocalizationService> {
+  async initialLoadLocalizations(
+    config: Partial<LocalizationServiceConfig>,
+    pathname: string
+  ): Promise<ILocalizationService> {
     const _config = { ...LocalizationKitFactory.commonServiceConfig, ...config };
     if (!_config.locales || _config.locales.length === 0) {
       throw new Error('ServiceConfig must have at least one locale');

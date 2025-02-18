@@ -1,7 +1,9 @@
 # Summary
+
 Inspired by https://github.com/sveltekit-i18n/lib.
 
 Written for Svelte 5 reactivity.
+
 - SSR enabled
 - lazy loading
 - some DX improvements
@@ -9,39 +11,41 @@ Written for Svelte 5 reactivity.
 No automation yet.
 
 # Localizations folder `src/lib/localization`
+
 `index.ts`
+
 ```ts
-import { browser, dev } from "$app/environment";
-import type { LocalizationImports } from "svelte5kit-localization";
-import { LocalizationKitService } from "svelte5kit-localization";
+import { browser, dev } from '$app/environment';
+import type { LocalizationImports } from 'svelte5kit-localization';
+import { LocalizationKitService } from 'svelte5kit-localization';
 
 // Place your jsons in the folder below
 // e.g. /src/lib/localization/locales/en-US/navigation.json
 const localizationsPath = '/src/lib/localization/locales';
 const localizationImports = import.meta.glob([
-  '/src/lib/localization/locales/**/*',
+  '/src/lib/localization/locales/**/*'
 ]) as LocalizationImports;
 
 LocalizationKitService.configure({
   browser,
   contextName: 'i18n',
   localizationsPath,
-  localizationImports,
+  localizationImports
 });
 const importLoaderFactory = LocalizationKitService.importLoaderFactory();
 LocalizationKitService.setCommonServiceConfig({
   loaders: [
     {
       key: 'navigation',
-      loader: importLoaderFactory('navigation.json'),
+      loader: importLoaderFactory('navigation.json')
     },
     {
       key: 'another',
       loader: importLoaderFactory('another.json'),
-      routes: ['/another'],
+      routes: ['/another']
     }
   ],
-  logger: dev && browser ? console : undefined,
+  logger: dev && browser ? console : undefined
 });
 
 const Service = {
@@ -51,7 +55,7 @@ const Service = {
   getLocalizedPSText: LocalizationKitService.getPSText,
   setLocalizationContextService: LocalizationKitService.setContextService,
   setActiveLocale: LocalizationKitService.setActiveLocale,
-  getActiveLocale: () => LocalizationKitService.activeLocale,
+  getActiveLocale: () => LocalizationKitService.activeLocale
 };
 
 export const {
@@ -61,11 +65,12 @@ export const {
   getLocalizedPSText,
   setLocalizationContextService,
   setActiveLocale,
-  getActiveLocale,
+  getActiveLocale
 } = Service;
 ```
 
 # Root `+layout.server.ts`
+
 ```ts
 import { extractLocales } from 'svelte5kit-localization';
 load(...
@@ -79,6 +84,7 @@ load(...
 ```
 
 # Root `+layout.ts`
+
 ```ts
 import { initialLoadLocalizations } from '$lib/localization';
 load(...
@@ -100,6 +106,7 @@ load(...
 ```
 
 # Root `+layout.svelte`
+
 ```ts
   import { loadLocalizations, setLocalizationContextService } from '$lib/localization';
   ...
@@ -114,6 +121,7 @@ load(...
 ```
 
 # Somewhere in your `myComponent.svelte`
+
 ```ts
   import { getLocalizationPSText, localizationText, setActiveLocale } from '$lib/localization';
   ....
