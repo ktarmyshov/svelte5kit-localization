@@ -11,6 +11,7 @@
     "svelte",
     "sveltekit",
     "localization",
+    "internationalization",
     "i18n",
     "l10n"
   ],
