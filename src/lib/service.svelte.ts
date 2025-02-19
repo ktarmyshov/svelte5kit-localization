@@ -1,10 +1,7 @@
 import { SvelteMap } from 'svelte/reactivity';
+import { namedFormat } from './string.js';
 
-export type LocalizationTextFunction = (key: string, comment?: string) => string;
-type LocalizationMap = Map<string, string>;
 export type Locale = string;
-type Key = string;
-type Route = string | RegExp;
 
 export type LocalizationLoaderInput<V = string> = {
   [K in Exclude<string, 'comment'>]: LocalizationLoaderInput<V> | V;
@@ -13,6 +10,9 @@ export type LocalizationLoaderInput<V = string> = {
 export type LocalizationLoaderFunction = (
   locale: Locale
 ) => Promise<LocalizationLoaderInput | undefined>;
+
+type Key = string;
+type Route = string | RegExp;
 export type LocalizationLoaderModule = {
   /**
    * Represents the translation namespace. This key is used as a translation prefix so it should be module-unique. You can access your translation later using `$t('key.yourTranslation')`. It shouldn't include `.` (dot) character.
@@ -30,7 +30,6 @@ export type LocalizationLoaderModule = {
 };
 
 type Logger = Pick<Console, 'error' | 'warn' | 'info' | 'debug' | 'trace'>;
-
 export interface LocalizationServiceConfig {
   locales?: Locale[];
   activeLocale?: Locale;
@@ -38,16 +37,20 @@ export interface LocalizationServiceConfig {
   logger?: Logger;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type LocalizationTextFunctionParams = Record<string, any>;
+export type LocalizationTextFunction = (key: string, params?: LocalizationTextFunctionParams) => string;
 export interface ILocalizationService {
-  locales: Locale[];
-  activeLocale: Locale | undefined;
+  readonly locales: Locale[];
+  getActiveLocale(): Locale | undefined;
   setActiveLocale(locale: string): void;
   loadLocalizations(pathname: string): Promise<void>;
-  text(key: string, comment?: string): string;
+  text: LocalizationTextFunction;
   getPSText(prefix: string | undefined, suffix?: string): LocalizationTextFunction;
 }
-
-export class LocalizationService implements ILocalizationService {
+type LocalizationMapFormatFunction = (params?: LocalizationTextFunctionParams) => string;
+type LocalizationMap = Map<string, LocalizationMapFormatFunction>;
+export class LocalizationServiceImpl implements ILocalizationService {
   readonly #config: LocalizationServiceConfig;
   #locales: Locale[] = $state([]);
   #activeLocale: Locale | undefined = $state(undefined);
@@ -68,10 +71,10 @@ export class LocalizationService implements ILocalizationService {
   get locales() {
     return this.#locales;
   }
-  get activeLocale() {
+  getActiveLocale = () => {
     return this.#activeLocale;
   }
-  setActiveLocale(locale: Locale): void {
+  setActiveLocale = (locale: Locale) => {
     if (this.#activeLocale === locale) return;
     this.#activeLocale = locale;
     if (!this.#locales.includes(locale)) {
@@ -84,22 +87,22 @@ export class LocalizationService implements ILocalizationService {
       this.loadLocalizations(this.#lastLoadedPathname);
     }
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  text(key: string, comment?: string): string {
+  text: LocalizationTextFunction = (key: string, params?: LocalizationTextFunctionParams) => {
     if (!this.#activeLocale) return key;
     const text = this.#localizations.get(this.#activeLocale)?.get(key);
     if (!text) {
       this.#logger?.debug(
-        `Translation not found for key neither in currently active locale ${this.activeLocale} of ${this.#locales}: ${key}`
+        `Translation not found for key neither in currently active locale ${this.#activeLocale} of ${this.#locales}: ${key}`
       );
+      return key;
     }
-    return text || key;
+    return text(params);
   }
-  getPSText(prefix: string | undefined, suffix?: string): LocalizationTextFunction {
-    return (key: string, comment?: string) => {
+  getPSText = (prefix: string | undefined, suffix?: string) => {
+    return (key: string, params?: LocalizationTextFunctionParams) => {
       const prefixKey = prefix ? `${prefix}.${key}` : key;
       const suffixKey = suffix ? `${prefixKey}.${suffix}` : prefixKey;
-      return this.text(suffixKey, comment);
+      return this.text(suffixKey, params);
     };
   }
   async loadLocalizations(pathname: string): Promise<void> {
@@ -187,14 +190,22 @@ export class LocalizationService implements ILocalizationService {
           result.set(key + '.' + nestedKey, nestedValue);
         }
       } else {
-        result.set(key, value);
+        // TODO: handle parsing of the input, to select right formatting function: e.g. ICU, sprintf, or named format, etc...
+        // TODO: at the moment we just return the value as a function
+        result.set(key, (params?: LocalizationTextFunctionParams) => namedFormat(value, params));
       }
     }
     return result;
   }
 }
 
-export type LocalizationImportLoaderInput = { default: LocalizationLoaderInput };
+export type LocalizationImportLoaderInput = {
+  default: LocalizationLoaderInput,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  prepare?: (format: string) => any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  format?: (format: string, params: Record<string, any>) => string
+};
 export type LocalizationImports = Record<string, () => Promise<LocalizationImportLoaderInput>>;
 export type LocalizationImportLoaderFactory = (importPath: string) => LocalizationLoaderFunction;
 export function localizationImportLoaderFactory(
