@@ -1,12 +1,23 @@
 {
   "name": "svelte5kit-localization",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
   "author": {
     "name": "Konstantin Tarmyshov",
     "email": "k.tarmyshov@googlemail.com"
   },
   "homepage": "https://github.com/ktarmyshov/svelte5kit-localization",
+  "keywords": [
+    "svelte",
+    "sveltekit",
+    "localization",
+    "i18n",
+    "l10n"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ktarmyshov/svelte5kit-localization.git"
+  },
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && npm run prepack",

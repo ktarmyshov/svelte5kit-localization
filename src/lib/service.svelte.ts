@@ -135,6 +135,8 @@ export class LocalizationService implements ILocalizationService {
             continue;
           } else if (this.#activeLocale === undefined) {
             this.setActiveLocale(loadLocale);
+            // Remove all locales and add the active one
+            loadLocales.splice(0, loadLocales.length, loadLocale);
           }
           const flatStringData = this.flattenLocalizationWithPrefix(loader.key, data);
           let localeLocalization = this.#localizations.get(loadLocale);
