@@ -155,9 +155,9 @@ export function namedFormat(
 ## Prepare function
 
 ```ts
-export const prepareNamedFormat: PrepareFunction = (_: Locale, format: string) => {
+export const prepareNamedFormat: PrepareFunction = (_: Locale, value: string) => {
   return function (params?: FormatParams) {
-    return namedFormat(format, params);
+    return namedFormat(value, params);
   };
 };
 ```
