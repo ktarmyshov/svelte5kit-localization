@@ -72,6 +72,6 @@
   "dependencies": {
     "i": "^0.3.7",
     "intl-messageformat": "^10.7.15",
-    "npm": "^11.1.0"
+    "npm": "^10.9.2"
   }
 }
