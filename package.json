@@ -1,6 +1,6 @@
 {
   "name": "svelte5kit-localization",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "author": {
     "name": "Konstantin Tarmyshov",
@@ -57,5 +57,10 @@
     "typescript": "^5.0.0",
     "typescript-eslint": "^8.20.0",
     "vite": "^6.0.0"
+  },
+  "dependencies": {
+    "i": "^0.3.7",
+    "intl-messageformat": "^10.7.15",
+    "npm": "^10.9.2"
   }
 }

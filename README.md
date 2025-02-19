@@ -7,6 +7,8 @@ Written for Svelte 5 reactivity.
 - SSR enabled
 - lazy loading
 - some DX improvements
+- named format (custom see below)
+- IUC format (via 'intl-messageformat'), not tested yet
 
 No automation yet.
 
@@ -16,57 +18,53 @@ No automation yet.
 
 ```ts
 import { browser, dev } from '$app/environment';
-import type { LocalizationImports } from 'svelte5kit-localization';
-import { LocalizationKitService } from 'svelte5kit-localization';
+import { LocalizationFactory, type ImportLoads } from 'svelte5kit-localization';
 
 // Place your jsons in the folder below
 // e.g. /src/lib/localization/locales/en-US/navigation.json
-const localizationsPath = '/src/lib/localization/locales';
-const localizationImports = import.meta.glob([
-  '/src/lib/localization/locales/**/*'
-]) as LocalizationImports;
+const importDirPath = '/src/lib/localization/locales';
+const importLoads = import.meta.glob(['/src/lib/localization/locales/**/*']) as ImportLoads;
 
-LocalizationKitService.configure({
+// Configure the factory
+LocalizationFactory.configure({
   browser,
   contextName: 'i18n',
-  localizationsPath,
-  localizationImports
+  importDirPath,
+  importLoads
 });
-const importLoaderFactory = LocalizationKitService.importLoaderFactory();
-LocalizationKitService.setCommonServiceConfig({
+// Now configure the service
+const importLoaderFactory = LocalizationFactory.importLoaderFactory();
+LocalizationFactory.setCommonServiceConfig({
+  // prepare: prepareICUFormat - set prepare on top level
+  // impl: prepare = loader.prepare ?? config.prepare ?? prepareNamedFormat
   loaders: [
     {
       key: 'navigation',
-      loader: importLoaderFactory('navigation.json')
+      load: importLoaderFactory('navigation.json')
     },
     {
       key: 'another',
-      loader: importLoaderFactory('another.json'),
+      load: importLoaderFactory('another.json'),
+      // prepare: prepareICUFormat - set prepare on loader level
       routes: ['/another']
     }
   ],
   logger: dev && browser ? console : undefined
 });
 
-const Service = {
-  initialLoadLocalizations: LocalizationKitService.initialLoadLocalizations,
-  loadLocalizations: LocalizationKitService.loadLocalizations,
-  localizedText: LocalizationKitService.text,
-  getLocalizedPSText: LocalizationKitService.getPSText,
-  setLocalizationContextService: LocalizationKitService.setContextService,
-  setActiveLocale: LocalizationKitService.setActiveLocale,
-  getActiveLocale: () => LocalizationKitService.activeLocale
-};
-
 export const {
   initialLoadLocalizations,
-  loadLocalizations,
-  localizedText,
-  getLocalizedPSText,
-  setLocalizationContextService,
-  setActiveLocale,
-  getActiveLocale
-} = Service;
+  setContextService: setLocalizationContextService,
+  getContextService: getLocalizationContextService,
+  availableLocales
+} = LocalizationFactory;
+
+export function loadLocalizations(pathname: string) {
+  return getLocalizationContextService().loadLocalizations(pathname);
+}
+export function setActiveLocale(locale: string) {
+  return getLocalizationContextService().setActiveLocale(locale);
+}
 ```
 
 # Root `+layout.server.ts`
@@ -123,14 +121,54 @@ load(...
 # Somewhere in your `myComponent.svelte`
 
 ```ts
-  import { getLocalizedPSText, localizedText, setActiveLocale } from '$lib/localization';
+  import { getLocalizationContextService } from '$lib/localization';
   ....
-  const localizedTitle = getLocalizedPSText('navigation', 'title');
+  const { text, getPSText, setActiveLocale } = getLocalizationContextService();
   ...
+  text('my.some.key.maybeformat', {param1: "whatever"});
+  const pstext = getPSText('prefix', 'suffix');
+  pstext('my.some', {param1: "whatever"}); // = text('prefix.my.some.suffix')
 
-  setActiveLocale('de'); // Will trigger loading (if not loaded already) for the last pathname, which was loaded
+  // Will trigger loading (if not loaded already) for the last pathname, which was loaded
+  setActiveLocale('de');
 
   ...
-  <span>{localizedTitle('myelement')}</span> <!-- = localizedText('navigation.myelement.title') -->
-  <span>{localizedText('navigation.myelement.title')}</span> <!-- same as above -->
+  <span>{text('my.some.key.maybeformat', {param1: "whatever"})}</span>
+  <span>{pstext('my.some', {param1: "whatever"})}</span> <!-- same as above -->
+```
+
+# Named format
+
+## Implementation
+
+```ts
+export function namedFormat(
+  str: string,
+  replacements?: Record<string, string | undefined>
+): string {
+  return str.replace(/{([^{}]*)}/g, function (match, key) {
+    return replacements?.[key] || match;
+  });
+}
+```
+
+## Prepare function
+
+```ts
+export const prepareNamedFormat: PrepareFunction = (_: Locale, format: string) => {
+  return function (params?: FormatParams) {
+    return namedFormat(format, params);
+  };
+};
+```
+
+# ICU format prepare function
+
+```ts
+export const prepareICUFormat: PrepareFunction = (locale: Locale, value: string) => {
+  const msg = new IntlMessageFormat(value, locale);
+  return function (params?: FormatParams) {
+    return msg.format(params);
+  };
+};
 ```

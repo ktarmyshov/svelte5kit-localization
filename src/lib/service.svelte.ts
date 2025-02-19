@@ -1,19 +1,20 @@
+import { IntlMessageFormat } from 'intl-messageformat';
 import { SvelteMap } from 'svelte/reactivity';
 import { namedFormat } from './string.js';
 
 export type Locale = string;
 
-export type LocalizationLoaderInput<V = string> = {
-  [K in Exclude<string, 'comment'>]: LocalizationLoaderInput<V> | V;
+export type LoadResult<V = string> = {
+  [K in string]: LoadResult<V> | V;
 };
 
-export type LocalizationLoaderFunction = (
-  locale: Locale
-) => Promise<LocalizationLoaderInput | undefined>;
+export type LoadFunction = (locale: Locale) => Promise<LoadResult | undefined>;
 
 type Key = string;
 type Route = string | RegExp;
-export type LocalizationLoaderModule = {
+type FormatFunction = (params?: FormatParams) => string;
+type PrepareFunction = (locale: Locale, format: string) => FormatFunction;
+export type LoaderModule = {
   /**
    * Represents the translation namespace. This key is used as a translation prefix so it should be module-unique. You can access your translation later using `$t('key.yourTranslation')`. It shouldn't include `.` (dot) character.
    */
@@ -21,7 +22,11 @@ export type LocalizationLoaderModule = {
   /**
    * Function returning a `Promise` with translation data. You can use it to load files locally, fetch it from your API etc...
    */
-  loader: LocalizationLoaderFunction;
+  load: LoadFunction;
+  /**
+   * Prepare function for the format. Default is `prepareNamedFormat`.
+   */
+  prepare?: PrepareFunction;
   /**
    * Define routes this loader should be triggered for. You can use Regular expressions too. For example `[/\/.ome/]` will be triggered for `/home` and `/rome` route as well (but still only once). Leave this `undefined` in case you want to load this module with any route (useful for common translations).
    * Regex or prefix of the route
@@ -30,38 +35,38 @@ export type LocalizationLoaderModule = {
 };
 
 type Logger = Pick<Console, 'error' | 'warn' | 'info' | 'debug' | 'trace'>;
-export interface LocalizationServiceConfig {
+export interface ServiceConfig {
   locales?: Locale[];
   activeLocale?: Locale;
-  loaders?: LocalizationLoaderModule[];
+  prepare?: PrepareFunction;
+  loaders?: LoaderModule[];
   logger?: Logger;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type LocalizationTextFunctionParams = Record<string, any>;
-export type LocalizationTextFunction = (key: string, params?: LocalizationTextFunctionParams) => string;
+export type FormatParams = Record<string, any>;
+export type TextFunction = (key: string, params?: FormatParams) => string;
 export interface ILocalizationService {
   readonly locales: Locale[];
   getActiveLocale(): Locale | undefined;
   setActiveLocale(locale: string): void;
   loadLocalizations(pathname: string): Promise<void>;
-  text: LocalizationTextFunction;
-  getPSText(prefix: string | undefined, suffix?: string): LocalizationTextFunction;
+  text: TextFunction;
+  getPSText(prefix: string | undefined, suffix?: string): TextFunction;
 }
-type LocalizationMapFormatFunction = (params?: LocalizationTextFunctionParams) => string;
-type LocalizationMap = Map<string, LocalizationMapFormatFunction>;
-export class LocalizationServiceImpl implements ILocalizationService {
-  readonly #config: LocalizationServiceConfig;
+type LocalizationMap = Map<string, FormatFunction>;
+export class LocalizationService implements ILocalizationService {
+  readonly #config: ServiceConfig;
   #locales: Locale[] = $state([]);
   #activeLocale: Locale | undefined = $state(undefined);
   // Loaded localizations: locale -> key -> value, flattened and expanded
-  readonly #localizations: Map<string, LocalizationMap> = new SvelteMap();
+  readonly #localizations: Map<Locale, LocalizationMap> = new SvelteMap();
   // Which localizations have alread been loaded: locale -> loader -> boolean
-  #executedLoaders: Map<string, Set<LocalizationLoaderModule>> = new Map();
+  #executedLoaders: Map<Locale, Set<LoaderModule>> = new Map();
   readonly #logger?: Logger;
   #lastLoadedPathname: string | undefined = undefined;
 
-  constructor(config: LocalizationServiceConfig) {
+  constructor(config: ServiceConfig) {
     this.#config = config;
     this.#locales = config.locales ?? [];
     this.#logger = config.logger;
@@ -73,7 +78,7 @@ export class LocalizationServiceImpl implements ILocalizationService {
   }
   getActiveLocale = () => {
     return this.#activeLocale;
-  }
+  };
   setActiveLocale = (locale: Locale) => {
     if (this.#activeLocale === locale) return;
     this.#activeLocale = locale;
@@ -86,8 +91,8 @@ export class LocalizationServiceImpl implements ILocalizationService {
       );
       this.loadLocalizations(this.#lastLoadedPathname);
     }
-  }
-  text: LocalizationTextFunction = (key: string, params?: LocalizationTextFunctionParams) => {
+  };
+  text: TextFunction = (key: string, params?: FormatParams) => {
     if (!this.#activeLocale) return key;
     const text = this.#localizations.get(this.#activeLocale)?.get(key);
     if (!text) {
@@ -97,15 +102,15 @@ export class LocalizationServiceImpl implements ILocalizationService {
       return key;
     }
     return text(params);
-  }
+  };
   getPSText = (prefix: string | undefined, suffix?: string) => {
-    return (key: string, params?: LocalizationTextFunctionParams) => {
+    return (key: string, params?: FormatParams) => {
       const prefixKey = prefix ? `${prefix}.${key}` : key;
       const suffixKey = suffix ? `${prefixKey}.${suffix}` : prefixKey;
       return this.text(suffixKey, params);
     };
-  }
-  async loadLocalizations(pathname: string): Promise<void> {
+  };
+  loadLocalizations = async (pathname: string) => {
     if (pathname === '') throw new Error('Pathname must not be empty');
     // Do not react to locale changes in this method
     const loadLocales = this.#activeLocale ? [this.#activeLocale] : this.#locales;
@@ -122,7 +127,7 @@ export class LocalizationServiceImpl implements ILocalizationService {
           localeExecutedLoaders.add(loader);
         }
         try {
-          const data = await loader.loader(loadLocale);
+          const data = await loader.load(loadLocale);
           if (!data) {
             this.#logger?.debug(
               `No data loaded for locale ${loadLocale} and loader ${loader.key} [${loader.routes ?? '/*'}]`
@@ -131,15 +136,16 @@ export class LocalizationServiceImpl implements ILocalizationService {
           } else if (this.#activeLocale === undefined) {
             this.setActiveLocale(loadLocale);
           }
-          const flatData = this.flattenLocalizationWithPrefix(loader.key, data);
+          const flatStringData = this.flattenLocalizationWithPrefix(loader.key, data);
           let localeLocalization = this.#localizations.get(loadLocale);
           if (!localeLocalization) {
-            localeLocalization = new SvelteMap(flatData);
+            localeLocalization = new SvelteMap();
             this.#localizations.set(loadLocale, localeLocalization);
-          } else {
-            for (const [key, value] of flatData) {
-              localeLocalization.set(key, value);
-            }
+          }
+          const prepare: PrepareFunction =
+            loader.prepare ?? this.#config.prepare ?? prepareNamedFormat;
+          for (const [key, value] of flatStringData) {
+            localeLocalization.set(key, prepare(loadLocale, value));
           }
           // Successfully loaded, no need to try other locales
           break;
@@ -151,9 +157,9 @@ export class LocalizationServiceImpl implements ILocalizationService {
       }
       this.#lastLoadedPathname = pathname;
     }
-  }
+  };
 
-  private getRelevantLoaders(pathname: string): LocalizationLoaderModule[] {
+  private getRelevantLoaders(pathname: string): LoaderModule[] {
     return (
       this.#config.loaders?.filter((loader) => {
         if (!loader.routes || loader.routes.length === 0) return true;
@@ -169,19 +175,19 @@ export class LocalizationServiceImpl implements ILocalizationService {
 
   private flattenLocalizationWithPrefix(
     prefixKey: Key | undefined,
-    localization: LocalizationLoaderInput
-  ): LocalizationMap {
-    const flatLocalization: LocalizationMap = this.flattenLocalization(localization);
+    localization: LoadResult
+  ): Map<string, string> {
+    const flatLocalization: Map<string, string> = this.flattenLocalization(localization);
     const prefix = prefixKey || prefixKey == '' ? `${prefixKey}.` : '';
-    const result: LocalizationMap = new SvelteMap();
+    const result: Map<string, string> = new Map();
     for (const [key, value] of flatLocalization) {
       result.set(`${prefix}${key}`, value);
     }
     return result;
   }
 
-  private flattenLocalization(localization: LocalizationLoaderInput): LocalizationMap {
-    const result: LocalizationMap = new Map();
+  private flattenLocalization(localization: LoadResult): Map<string, string> {
+    const result: Map<string, string> = new Map();
     for (const key in localization) {
       const value = localization[key];
       if (typeof value === 'object') {
@@ -190,35 +196,22 @@ export class LocalizationServiceImpl implements ILocalizationService {
           result.set(key + '.' + nestedKey, nestedValue);
         }
       } else {
-        // TODO: handle parsing of the input, to select right formatting function: e.g. ICU, sprintf, or named format, etc...
-        // TODO: at the moment we just return the value as a function
-        result.set(key, (params?: LocalizationTextFunctionParams) => namedFormat(value, params));
+        result.set(key, value);
       }
     }
     return result;
   }
 }
 
-export type LocalizationImportLoaderInput = {
-  default: LocalizationLoaderInput,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  prepare?: (format: string) => any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  format?: (format: string, params: Record<string, any>) => string
-};
-export type LocalizationImports = Record<string, () => Promise<LocalizationImportLoaderInput>>;
-export type LocalizationImportLoaderFactory = (importPath: string) => LocalizationLoaderFunction;
-export function localizationImportLoaderFactory(
-  localizationsPath: string,
-  importLocalizations: LocalizationImports
-): LocalizationImportLoaderFactory {
-  return (importPath: string): LocalizationLoaderFunction => {
-    return async (locale: Locale) => {
-      const importLocalizationPath = `${localizationsPath}/${locale}/${importPath}`;
-      const importFunc = importLocalizations[importLocalizationPath];
-      if (!importFunc) return undefined;
-      const data = (await importFunc()) as LocalizationImportLoaderInput;
-      return data.default;
-    };
+export const prepareNamedFormat: PrepareFunction = (_: Locale, format: string) => {
+  return function (params?: FormatParams) {
+    return namedFormat(format, params);
   };
-}
+};
+
+export const prepareICUFormat: PrepareFunction = (locale: Locale, value: string) => {
+  const msg = new IntlMessageFormat(value, locale);
+  return function (params?: FormatParams) {
+    return msg.format(params);
+  };
+};

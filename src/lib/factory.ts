@@ -1,93 +1,109 @@
 import { getContext, setContext } from 'svelte';
 import {
-  LocalizationServiceImpl,
-  localizationImportLoaderFactory,
+  LocalizationService,
   type ILocalizationService,
+  type LoadFunction,
+  type LoadResult,
   type Locale,
-  type LocalizationImportLoaderFactory,
-  type LocalizationLoaderInput,
-  type LocalizationServiceConfig
+  type ServiceConfig
 } from './service.svelte.js';
 
-export type LocalizationFactoryConfig = {
+export type ImportLoadResult = {
+  default: LoadResult;
+};
+export type ImportLoads = Record<string, () => Promise<ImportLoadResult>>;
+export type ImportLoadFactory = (importFilePath: string) => LoadFunction;
+export type FactoryConfig = {
   readonly browser: boolean;
   readonly contextName: string;
-  readonly localizationsPath: string;
-  readonly localizationImports: Record<string, () => Promise<{ default: LocalizationLoaderInput }>>;
+  readonly importDirPath: string;
+  readonly importLoads: ImportLoads;
 };
 
-type LocalizationFactoryContext = {
+type Context = {
   service(): ILocalizationService;
 };
 
-class _LocalizationFactory {
+class Factory {
   private static __instance: ILocalizationService | undefined = undefined;
-  private static __config: LocalizationFactoryConfig | undefined = undefined;
-  private static __commonServiceConfig: LocalizationServiceConfig | undefined = undefined;
+  private static __config: FactoryConfig | undefined = undefined;
+  private static __commonServiceConfig: ServiceConfig | undefined = undefined;
 
-  public static configure(config: LocalizationFactoryConfig) {
-    _LocalizationFactory.__config = config;
+  public static configure(config: FactoryConfig) {
+    Factory.__config = config;
   }
-  public static get config(): LocalizationFactoryConfig {
-    if (!_LocalizationFactory.__config) {
+  public static get config(): FactoryConfig {
+    if (!Factory.__config) {
       throw new Error('Localization Service Factory not initialized, use configure() first');
     }
-    return _LocalizationFactory.__config;
+    return Factory.__config;
   }
-  public static setCommonServiceConfig(config: LocalizationServiceConfig) {
-    _LocalizationFactory.__commonServiceConfig = config;
+  public static setCommonServiceConfig(config: ServiceConfig) {
+    Factory.__commonServiceConfig = config;
   }
-  public static get commonServiceConfig(): LocalizationServiceConfig {
-    if (!_LocalizationFactory.__commonServiceConfig) {
-      throw new Error('Localization Service Factory Common Service Config not initialized, use setCommonServiceConfig() first');
+  public static get commonServiceConfig(): ServiceConfig {
+    if (!Factory.__commonServiceConfig) {
+      throw new Error(
+        'Localization Common Service Config not initialized, use setCommonServiceConfig() first'
+      );
     }
-    return _LocalizationFactory.__commonServiceConfig;
+    return Factory.__commonServiceConfig;
   }
-  public static getService(config?: LocalizationServiceConfig): ILocalizationService {
+  public static createService(config: ServiceConfig): ILocalizationService {
     if (!this.config.browser) {
-      if (!config) {
-        throw new Error('ServiceConfig is required in non-browser environment');
-      }
-      return new LocalizationServiceImpl(config);
+      return new LocalizationService(config);
     }
     if (!this.__instance) {
-      if (!config) {
-        throw new Error(
-          ' Localization service is not initialized, ServiceConfig is required in browser environment when first initializing'
-        );
-      }
-      this.__instance = new LocalizationServiceImpl(config);
+      this.__instance = new LocalizationService(config);
     }
     return this.__instance;
   }
-  public static getContextService(config?: LocalizationServiceConfig): ILocalizationService {
+  public static getContextService(): ILocalizationService {
     if (!this.config.browser) {
-      const service = getContext<LocalizationFactoryContext | undefined>(
-        this.config.contextName
-      )?.service();
+      const service = getContext<Context | undefined>(this.config.contextName)?.service();
       if (!service) {
         throw new Error(`Localization service not found in context ${this.config.contextName}`);
       }
       return service;
     }
-    return this.getService(config);
+    if (!this.__instance) {
+      throw new Error(
+        'Localization service is not initialized, use initialLoadLocalizations() first'
+      );
+    }
+    return this.__instance;
   }
   public static setContextService(service: ILocalizationService) {
-    setContext<LocalizationFactoryContext>(this.config.contextName, { service: () => service });
+    setContext<Context>(this.config.contextName, { service: () => service });
   }
 }
 
 export interface ILocalizationFactory {
   readonly availableLocales: Locale[];
-  configure(config: LocalizationFactoryConfig): void;
-  setCommonServiceConfig(config: LocalizationServiceConfig): void
-  importLoaderFactory(): LocalizationImportLoaderFactory;
+  configure(config: FactoryConfig): void;
+  setCommonServiceConfig(config: ServiceConfig): void;
+  importLoaderFactory(): ImportLoadFactory;
   setContextService(service: ILocalizationService): void;
   getContextService(): ILocalizationService;
   initialLoadLocalizations(
-    config: Partial<LocalizationServiceConfig>,
+    config: Partial<ServiceConfig>,
     pathname: string
   ): Promise<ILocalizationService>;
+}
+
+export function importLoadFactory(
+  importDirPath: string,
+  importLoads: ImportLoads
+): ImportLoadFactory {
+  return (importFilePath: string): LoadFunction => {
+    return async (locale: Locale) => {
+      const importLocalizationPath = `${importDirPath}/${locale}/${importFilePath}`;
+      const importFunc = importLoads[importLocalizationPath];
+      if (!importFunc) return undefined;
+      const data = (await importFunc()) as ImportLoadResult;
+      return data.default;
+    };
+  };
 }
 
 export const LocalizationFactory: ILocalizationFactory = {
@@ -95,40 +111,36 @@ export const LocalizationFactory: ILocalizationFactory = {
     // Scan the import map for available locales
     return Array.from(
       new Set(
-        Object.keys(_LocalizationFactory.config.localizationImports).map(
-          (key) =>
-            key.substring(_LocalizationFactory.config.localizationsPath.length + 1).split('/')[0]
+        Object.keys(Factory.config.importLoads).map(
+          (key) => key.substring(Factory.config.importDirPath.length + 1).split('/')[0]
         )
       )
     );
   },
-  configure(config: LocalizationFactoryConfig): void {
-    _LocalizationFactory.configure(config);
+  configure(config: FactoryConfig): void {
+    Factory.configure(config);
   },
-  setCommonServiceConfig(config: LocalizationServiceConfig): void {
-    _LocalizationFactory.setCommonServiceConfig(config);
+  setCommonServiceConfig(config: ServiceConfig): void {
+    Factory.setCommonServiceConfig(config);
   },
   importLoaderFactory() {
-    return localizationImportLoaderFactory(
-      _LocalizationFactory.config.localizationsPath,
-      _LocalizationFactory.config.localizationImports
-    );
+    return importLoadFactory(Factory.config.importDirPath, Factory.config.importLoads);
   },
   setContextService(service: ILocalizationService): void {
-    _LocalizationFactory.setContextService(service);
+    Factory.setContextService(service);
   },
   getContextService() {
-    return _LocalizationFactory.getContextService();
+    return Factory.getContextService();
   },
   async initialLoadLocalizations(
-    config: Partial<LocalizationServiceConfig>,
+    config: Partial<ServiceConfig>,
     pathname: string
   ): Promise<ILocalizationService> {
-    const _config = { ..._LocalizationFactory.commonServiceConfig, ...config };
+    const _config = { ...Factory.commonServiceConfig, ...config };
     if (!_config.locales || _config.locales.length === 0) {
-      throw new Error('ServiceConfig must have at least one locale');
+      throw new Error('Service Config must have at least one locale');
     }
-    const service = _LocalizationFactory.getService(_config);
+    const service = Factory.createService(_config);
     await service.loadLocalizations(pathname);
     return service;
   }
