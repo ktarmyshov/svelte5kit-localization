@@ -35,13 +35,13 @@ export type LoaderModule = {
 };
 
 type Logger = Pick<Console, 'error' | 'warn' | 'info' | 'debug' | 'trace'>;
-export interface ServiceConfig {
+export type ServiceConfig = {
   locales?: Locale[];
   activeLocale?: Locale;
   prepare?: PrepareFunction;
   loaders?: LoaderModule[];
   logger?: Logger;
-}
+};
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type FormatParams = Record<string, any>;
