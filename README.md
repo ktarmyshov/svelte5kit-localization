@@ -94,7 +94,8 @@ load(...
     if (!locales.includes('en')) {
       locales.push('en'); // Add English as a fallback
     }
-    // If activeLocale is not provided, the first locale, for which load is successful, will be set as active
+    // If activeLocale is not provided, the first locale,
+    //   for which load is successful, will be set as active
     const i18n = await initialLoadLocalizations({ locales }, urlpathname);
     ...
     return {
