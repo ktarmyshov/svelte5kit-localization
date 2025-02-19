@@ -1,8 +1,9 @@
 export function namedFormat(
   str: string,
-  replacements?: Record<string, string | undefined>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  replacements?: Record<string, any>
 ): string {
   return str.replace(/{([^{}]*)}/g, function (match, key) {
-    return replacements?.[key] || match;
+    return replacements?.[key] ? `${replacements[key]}` : match;
   });
 }
