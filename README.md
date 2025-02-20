@@ -138,7 +138,7 @@ load(...
   pstext('my.some', {param1: "whatever"}); // = text('prefix.my.some.suffix')
 
   // default fallback
-  // Avoid using with the ICU format, because this will cause additional parcing on the request
+  // Avoid using with the ICU format, because this will cause additional parsing on the request
   text('my.some.key.maybeformat', {param1: "whatever", default:"Hi, {name}!"})
 
   // Will trigger loading (if not loaded already) for the last pathname, which was loaded
