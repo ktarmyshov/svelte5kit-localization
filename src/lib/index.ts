@@ -2,11 +2,13 @@
 export {
   importLoadFactory,
   LocalizationFactory,
+  type CommonServiceConfig,
   type FactoryConfig,
   type ILocalizationFactory,
   type ImportLoadFactory,
   type ImportLoadResult,
-  type ImportLoads
+  type ImportLoads,
+  type InitialServiceConfig
 } from './factory.js';
 export {
   LocalizationService,
@@ -16,7 +18,6 @@ export {
   type LoaderModule,
   type LoadFunction,
   type LoadResult,
-  type Locale,
   type ServiceConfig,
   type TextFunction
 } from './service.svelte.js';

@@ -24,7 +24,6 @@ import { LocalizationFactory, type ImportLoads } from 'svelte5kit-localization';
 // e.g. /src/lib/localization/locales/en-US/navigation.json
 const importDirPath = '/src/lib/localization/locales';
 const importLoads = import.meta.glob(['/src/lib/localization/locales/**/*']) as ImportLoads;
-
 // Configure the factory
 LocalizationFactory.configure({
   browser,
@@ -35,8 +34,7 @@ LocalizationFactory.configure({
 // Now configure the service
 const importLoaderFactory = LocalizationFactory.importLoaderFactory();
 LocalizationFactory.setCommonServiceConfig({
-  // prepare: prepareICUFormat - set prepare on top level
-  // impl: prepare = loader.prepare ?? config.prepare ?? prepareNamedFormat
+  availableLocales: ['en'],
   loaders: [
     {
       key: 'navigation',
@@ -45,8 +43,7 @@ LocalizationFactory.setCommonServiceConfig({
     {
       key: 'another',
       load: importLoaderFactory('another.json'),
-      // prepare: prepareICUFormat - set prepare on loader level
-      routes: ['/another']
+      routes: ['/onemore']
     }
   ],
   logger: dev && browser ? console : undefined
@@ -55,8 +52,7 @@ LocalizationFactory.setCommonServiceConfig({
 export const {
   initialLoadLocalizations,
   setContextService: setLocalizationContextService,
-  getContextService: getLocalizationContextService,
-  availableLocales
+  getContextService: getLocalizationContextService
 } = LocalizationFactory;
 
 export function loadLocalizations(pathname: string) {
@@ -73,11 +69,11 @@ export function setActiveLocale(locale: string) {
 import { extractLocales } from 'svelte5kit-localization';
 load(...
 ...
-    const locales = extractLocales(event);
     ...
     return {
       ...
-      locales
+      // extractLocales uses event.untrack to extract all locations, so it won't trigger reload
+      i18n: extractLocales(event),
     };
 ```
 
@@ -90,13 +86,18 @@ load(...
     // Get url path without tracking
     // Otherwise this will trigger on every navigation
     const urlpathname = event.untrack(() => event.url.pathname);
-    const locales = browser ? [...navigator.languages] : event.data.locales;
-    if (!locales.includes('en')) {
-      locales.push('en'); // Add English as a fallback
-    }
-    // If activeLocale is not provided, the first locale,
-    //   for which load is successful, will be set as active
-    const i18n = await initialLoadLocalizations({ locales }, urlpathname);
+    const requestedLocales = browser ? [...navigator.languages] : event.data.i18n.requestedLocales;
+    // Find the first requested locale that is available
+    const availableLocales = LocalizationFactory.commonServiceConfig.availableLocales;
+    const activeLocale = requestedLocales.find(
+      (locale) => availableLocales.includes(locale)
+    ) || availableLocales[0];
+    const i18n = await initialLoadLocalizations(
+      {
+        activeLocale: activeLocale
+      },
+      urlpathname
+    );
     ...
     return {
       ...
