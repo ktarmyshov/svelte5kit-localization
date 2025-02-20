@@ -41,8 +41,11 @@ export type ServiceConfig = {
   logger?: Logger;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type FormatParams = Record<string, any>;
+export type FormatParams = {
+  default?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+};
 export type TextFunction = (key: string, params?: FormatParams) => string;
 export interface ILocalizationService {
   readonly availableLocales: readonly string[];
@@ -202,13 +205,14 @@ export class LocalizationService implements ILocalizationService {
 
 export const prepareNamedFormat: PrepareFunction = (_: string, value: string) => {
   return function (params?: FormatParams) {
-    return namedFormat(value, params);
+    return namedFormat(params?.default ?? value, params);
   };
 };
 
 export const prepareICUFormat: PrepareFunction = (locale: string, value: string) => {
   const msg = new IntlMessageFormat(value, locale);
   return function (params?: FormatParams) {
-    return msg.format(params);
+    const _msg = params?.default ? new IntlMessageFormat(params.default, locale) : msg;
+    return _msg.format(params);
   };
 };

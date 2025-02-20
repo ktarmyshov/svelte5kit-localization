@@ -35,6 +35,10 @@ LocalizationFactory.configure({
 const importLoaderFactory = LocalizationFactory.importLoaderFactory();
 LocalizationFactory.setCommonServiceConfig({
   availableLocales: ['en'],
+  // Set prepare on the top level
+  // IMPL: const prepare = loader.prepare ?? config.prepare ?? prepareNamedFormat
+  // Use this option for ICU format, so the localizations are preparsed (see impl below)
+  // prepare: prepareICUFormat
   loaders: [
     {
       key: 'navigation',
@@ -43,6 +47,8 @@ LocalizationFactory.setCommonServiceConfig({
     {
       key: 'another',
       load: importLoaderFactory('another.json'),
+      // Set prepare on loader level
+      // prepare: prepareICUFormat
       routes: ['/onemore']
     }
   ],
@@ -131,12 +137,17 @@ load(...
   const pstext = getPSText('prefix', 'suffix');
   pstext('my.some', {param1: "whatever"}); // = text('prefix.my.some.suffix')
 
+  // default fallback
+  // Avoid using with the ICU format, because this will cause additional parcing on the request
+  text('my.some.key.maybeformat', {param1: "whatever", default:"Hi, {name}!"})
+
   // Will trigger loading (if not loaded already) for the last pathname, which was loaded
   setActiveLocale('de');
 
   ...
   <span>{text('my.some.key.maybeformat', {param1: "whatever"})}</span>
   <span>{pstext('my.some', {param1: "whatever"})}</span> <!-- same as above -->
+  <span>{text('my.some.key.maybeformat', {param1: "whatever", default:"Hi, {name}!"})}</span>
 ```
 
 # Named format
@@ -157,9 +168,9 @@ export function namedFormat(
 ## Prepare function
 
 ```ts
-export const prepareNamedFormat: PrepareFunction = (_: Locale, value: string) => {
+export const prepareNamedFormat: PrepareFunction = (_: string, value: string) => {
   return function (params?: FormatParams) {
-    return namedFormat(value, params);
+    return namedFormat(params?.default ?? value, params);
   };
 };
 ```
@@ -167,10 +178,11 @@ export const prepareNamedFormat: PrepareFunction = (_: Locale, value: string) =>
 # ICU format prepare function
 
 ```ts
-export const prepareICUFormat: PrepareFunction = (locale: Locale, value: string) => {
+export const prepareICUFormat: PrepareFunction = (locale: string, value: string) => {
   const msg = new IntlMessageFormat(value, locale);
   return function (params?: FormatParams) {
-    return msg.format(params);
+    const _msg = params?.default ? new IntlMessageFormat(params.default, locale) : msg;
+    return _msg.format(params);
   };
 };
 ```

@@ -9,17 +9,21 @@ type SearchOptions = {
   searchParams?: string[];
   cookies?: string[];
 };
-export function extractLocales(event: ServerLoadEvent, searchOptions: SearchOptions | undefined = {
-  params: ['lang', 'locale', 'language'],
-  searchParams: ['lang', 'locale', 'language'],
-  cookies: ['lang', 'locale', 'language']
-}): ExtractedLocales {
+export function extractLocales(
+  event: ServerLoadEvent,
+  searchOptions: SearchOptions | undefined = {
+    params: ['lang', 'locale', 'language'],
+    searchParams: ['lang', 'locale', 'language'],
+    cookies: ['lang', 'locale', 'language']
+  }
+): ExtractedLocales {
   return event.untrack(() => {
     // Extract requested locales from headers
-    const requestedLocales = event.request.headers
-      .get('accept-language')
-      ?.split(',')
-      .map((locale) => locale.split(';', 1)[0]) ?? [];
+    const requestedLocales =
+      event.request.headers
+        .get('accept-language')
+        ?.split(',')
+        .map((locale) => locale.split(';', 1)[0]) ?? [];
     // Now try to finde the active locale
     let activeLocale: string | null | undefined = undefined;
     // Check event params

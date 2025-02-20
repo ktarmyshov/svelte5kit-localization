@@ -24,8 +24,7 @@ type Context = {
 };
 
 export type CommonServiceConfig = Omit<ServiceConfig, 'activeLocale'>;
-export type InitialServiceConfig = Partial<ServiceConfig> &
-  Pick<ServiceConfig, 'activeLocale'>;
+export type InitialServiceConfig = Partial<ServiceConfig> & Pick<ServiceConfig, 'activeLocale'>;
 
 class Factory {
   private static __instance: ILocalizationService | undefined = undefined;
