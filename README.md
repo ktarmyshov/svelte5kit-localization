@@ -168,7 +168,7 @@ export function namedFormat(
 ```ts
 export const prepareNamedFormat: PrepareFunction = (_: string, value: string) => {
   return function (params?: FormatParams) {
-    return namedFormat(params?.default ?? value, params);
+    return namedFormat(value, params);
   };
 };
 ```

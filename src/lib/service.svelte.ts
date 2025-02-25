@@ -95,8 +95,8 @@ export class LocalizationService implements ILocalizationService {
   };
   text: TextFunction = (key: string, params?: FormatParams) => {
     if (!this.#activeLocale) return key;
-    const text = this.#localizations.get(this.#activeLocale)?.get(key);
-    if (!text) {
+    const formatText = this.#localizations.get(this.#activeLocale)?.get(key);
+    if (!formatText) {
       this.#logger?.debug(
         `Translation not found for key for the currently active locale ${this.#activeLocale}: ${key}`
       );
@@ -104,7 +104,7 @@ export class LocalizationService implements ILocalizationService {
       const prepare: PrepareFunction = this.#config.prepare ?? prepareNamedFormat;
       return prepare(this.#activeLocale, value)(params);
     }
-    return text(params);
+    return formatText(params);
   };
   getPSText = (prefix: string | undefined, suffix?: string) => {
     return (key: string, params?: FormatParams) => {
