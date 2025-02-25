@@ -11,7 +11,7 @@ export type LoadFunction = (locale: string) => Promise<LoadResult | undefined>;
 type Key = string;
 type Route = string | RegExp;
 type FormatFunction = (params?: FormatParams) => string;
-type PrepareFunction = (locale: string, format: string) => FormatFunction;
+type PrepareFunction = (locale: string, value: string) => FormatFunction;
 export type LoaderModule = {
   /**
    * Represents the translation namespace. This key is used as a translation prefix so it should be module-unique. You can access your translation later using `$t('key.yourTranslation')`. It shouldn't include `.` (dot) character.
@@ -21,10 +21,6 @@ export type LoaderModule = {
    * Function returning a `Promise` with translation data. You can use it to load files locally, fetch it from your API etc...
    */
   load: LoadFunction;
-  /**
-   * Prepare function for the format. Default is `prepareNamedFormat`.
-   */
-  prepare?: PrepareFunction;
   /**
    * Define routes this loader should be triggered for. You can use Regular expressions too. For example `[/\/.ome/]` will be triggered for `/home` and `/rome` route as well (but still only once). Leave this `undefined` in case you want to load this module with any route (useful for common translations).
    * Regex or prefix of the route
@@ -104,7 +100,9 @@ export class LocalizationService implements ILocalizationService {
       this.#logger?.debug(
         `Translation not found for key for the currently active locale ${this.#activeLocale}: ${key}`
       );
-      return key;
+      const value = params?.default ?? key;
+      const prepare: PrepareFunction = this.#config.prepare ?? prepareNamedFormat;
+      return prepare(this.#activeLocale, value)(params);
     }
     return text(params);
   };
@@ -143,8 +141,7 @@ export class LocalizationService implements ILocalizationService {
           localeLocalization = new SvelteMap();
           this.#localizations.set(loadLocale, localeLocalization);
         }
-        const prepare: PrepareFunction =
-          loader.prepare ?? this.#config.prepare ?? prepareNamedFormat;
+        const prepare: PrepareFunction = this.#config.prepare ?? prepareNamedFormat;
         for (const [key, value] of flatStringData) {
           localeLocalization.set(key, prepare(loadLocale, value));
         }
@@ -205,14 +202,13 @@ export class LocalizationService implements ILocalizationService {
 
 export const prepareNamedFormat: PrepareFunction = (_: string, value: string) => {
   return function (params?: FormatParams) {
-    return namedFormat(params?.default ?? value, params);
+    return namedFormat(value, params);
   };
 };
 
 export const prepareICUFormat: PrepareFunction = (locale: string, value: string) => {
   const msg = new IntlMessageFormat(value, locale);
   return function (params?: FormatParams) {
-    const _msg = params?.default ? new IntlMessageFormat(params.default, locale) : msg;
-    return _msg.format(params);
+    return msg.format(params);
   };
 };

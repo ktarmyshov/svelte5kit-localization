@@ -36,7 +36,7 @@ const importLoaderFactory = LocalizationFactory.importLoaderFactory();
 LocalizationFactory.setCommonServiceConfig({
   availableLocales: ['en'],
   // Set prepare on the top level
-  // IMPL: const prepare = loader.prepare ?? config.prepare ?? prepareNamedFormat
+  // IMPL: const prepare = config.prepare ?? prepareNamedFormat
   // Use this option for ICU format, so the localizations are preparsed (see impl below)
   // prepare: prepareICUFormat
   loaders: [
@@ -47,8 +47,6 @@ LocalizationFactory.setCommonServiceConfig({
     {
       key: 'another',
       load: importLoaderFactory('another.json'),
-      // Set prepare on loader level
-      // prepare: prepareICUFormat
       routes: ['/onemore']
     }
   ],
@@ -95,9 +93,9 @@ load(...
     const requestedLocales = browser ? [...navigator.languages] : event.data.i18n.requestedLocales;
     // Find the first requested locale that is available
     const availableLocales = LocalizationFactory.commonServiceConfig.availableLocales;
-    const activeLocale = requestedLocales.find(
-      (locale) => availableLocales.includes(locale)
-    ) || availableLocales[0];
+    const activeLocale = event.data.i18n.activeLocale
+      || requestedLocales.find((locale) => availableLocales.includes(locale))
+      || availableLocales[0];
     const i18n = await initialLoadLocalizations(
       {
         activeLocale: activeLocale
@@ -181,8 +179,7 @@ export const prepareNamedFormat: PrepareFunction = (_: string, value: string) =>
 export const prepareICUFormat: PrepareFunction = (locale: string, value: string) => {
   const msg = new IntlMessageFormat(value, locale);
   return function (params?: FormatParams) {
-    const _msg = params?.default ? new IntlMessageFormat(params.default, locale) : msg;
-    return _msg.format(params);
+    return msg.format(params);
   };
 };
 ```
