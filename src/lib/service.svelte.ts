@@ -107,10 +107,11 @@ export class LocalizationService implements ILocalizationService {
     return formatText(params);
   };
   getPSText = (prefix: string | undefined, suffix?: string) => {
+    const text = this.text;
     return (key: string, params?: FormatParams) => {
       const prefixKey = prefix ? `${prefix}.${key}` : key;
       const suffixKey = suffix ? `${prefixKey}.${suffix}` : prefixKey;
-      return this.text(suffixKey, params);
+      return text(suffixKey, params);
     };
   };
   loadLocalizations = async (pathname: string) => {
