@@ -67,7 +67,7 @@
     "publint": "^0.3.6",
     "svelte": "^5.21.0",
     "svelte-check": "^4.0.0",
-    "typescript": "^5.0.0",
+    "typescript": "^5.8.2",
     "typescript-eslint": "^8.20.0",
     "vite": "^6.0.0"
   },
