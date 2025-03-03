@@ -21,11 +21,11 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Build, bump version, push
         run: |
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config --global user.name "dependabot[bot]"
           npm ci
           npm run build
           npm version patch -m "Dependabot update"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          git config --global user.name "dependabot[bot]"
           git push
       - name: Enable auto-merge for Dependabot PRs
         # if: contains(steps.metadata.outputs.dependency-names, 'my-dependency') && steps.metadata.outputs.update-type == 'version-update:semver-patch'
