@@ -25,6 +25,8 @@ jobs:
           git config --global user.name "dependabot[bot]"
           npm ci
           npm run build
+          # npm version patch -m "Dependabot update"
+          # git push
       - name: Enable auto-merge for Dependabot PRs
         # if: contains(steps.metadata.outputs.dependency-names, 'my-dependency') && steps.metadata.outputs.update-type == 'version-update:semver-patch'
         run: gh pr merge --auto --merge "$PR_URL"
