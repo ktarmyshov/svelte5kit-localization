@@ -2,10 +2,9 @@
 
 ## [0.0.16](https://github.com/ktarmyshov/svelte5kit-localization/compare/v0.0.15...v0.0.16) (2025-03-04)
 
-
 ### Bug Fixes
 
-* auto-test stub ([5af6e7e](https://github.com/ktarmyshov/svelte5kit-localization/commit/5af6e7e8e68957d8041111414a0516c2d6ceea7d))
+- auto-test stub ([5af6e7e](https://github.com/ktarmyshov/svelte5kit-localization/commit/5af6e7e8e68957d8041111414a0516c2d6ceea7d))
 
 ## [0.0.15](https://github.com/ktarmyshov/svelte5kit-localization/compare/v0.0.14...v0.0.15) (2025-03-04)
 
