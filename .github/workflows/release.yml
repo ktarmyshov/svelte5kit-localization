@@ -17,7 +17,7 @@ jobs:
         id: release
         with:
           release-type: node
-          # bump-minor-pre-major: true # remove this to enable breaking changes causing 1.0.0 tag
+          bump-minor-pre-major: true # remove this to enable breaking changes causing 1.0.0 tag
           bump-patch-for-minor-pre-major: true # remove this to enable breaking changes causing 1.0.0 tag
       # The logic below handles the npm publication:
       - uses: actions/checkout@v4
