@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.20](https://github.com/ktarmyshov/svelte5kit-localization/compare/v0.0.19...v0.0.20) (2025-03-04)
+
+### Bug Fixes
+
+- retry ([faba362](https://github.com/ktarmyshov/svelte5kit-localization/commit/faba36232df1cafca3d0cd2eaafd9121170c3ed6))
+
 ## [0.0.19](https://github.com/ktarmyshov/svelte5kit-localization/compare/v0.0.18...v0.0.19) (2025-03-04)
 
 ### Bug Fixes
