@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.15](https://github.com/ktarmyshov/svelte5kit-localization/compare/v0.0.14...v0.0.15) (2025-03-04)
+
+
+### Bug Fixes
+
+* test stub ([27fdc97](https://github.com/ktarmyshov/svelte5kit-localization/commit/27fdc97f6b6c3cf7d8566ef0eea38f32da3d6f9a))
+
 ## [0.0.14](https://github.com/ktarmyshov/svelte5kit-localization/compare/v0.0.13...v0.0.14) (2025-03-04)
 
 ### Bug Fixes
