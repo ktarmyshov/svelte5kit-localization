@@ -34,7 +34,7 @@ jobs:
           git config --global user.name "release-please"
           npm ci
           npm run build
-          # npm publish
+          npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         if: ${{ steps.release.outputs.release_created }}
