@@ -17,6 +17,8 @@ jobs:
         id: release
         with:
           release-type: node
+          # bump-minor-pre-major: true # remove this to enable breaking changes causing 1.0.0 tag
+          bump-patch-for-minor-pre-major: true # remove this to enable breaking changes causing 1.0.0 tag
       # The logic below handles the npm publication:
       - uses: actions/checkout@v4
         # these if statements ensure that a publication only occurs when
@@ -33,12 +35,7 @@ jobs:
           git config --global user.name "release-please"
           npm ci
           npm build
-          # npm run test
           # npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         if: ${{ steps.release.outputs.release_created }}
-      # - run: npm publish
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      #   if: ${{ steps.release.outputs.release_created }}
