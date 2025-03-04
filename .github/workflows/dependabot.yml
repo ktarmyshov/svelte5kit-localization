@@ -30,9 +30,25 @@ jobs:
           npm ci
           npm run build
           # npm run test
-      - name: Enable auto-merge for Dependabot PRs
+      - name: Auto-merge for Dependabot PRs
         # if: contains(steps.metadata.outputs.dependency-names, 'my-dependency') && steps.metadata.outputs.update-type == 'version-update:semver-patch'
         run: gh pr merge --auto --merge "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+  release-pr:
+    runs-on: ubuntu-latest
+    # if: github.event.pull_request.user.login == 'dependabot[bot]'
+    steps:
+      - name: just print
+        run: |
+          echo "github.event.pull_request.user.login: ${{ github.event.pull_request.user.login }}"
+          echo ${{ github.event.pull_request.user.login }}
+          echo "$GITHUB_ACTOR@users.noreply.github.com"
+          echo echo The Title of your PR is ${{ github.event.pull_request.title }}
+      - name: Check startsWith
+        run: |
+          if [[ "${{ startsWith(github.event.pull_request.title, 'the version is: xyz') }}" == "true" ]]; then
+            echo "startsWith is true"
+          fi
