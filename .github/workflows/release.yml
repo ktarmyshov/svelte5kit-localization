@@ -21,13 +21,15 @@ jobs:
           bump-patch-for-minor-pre-major: true # remove this to enable breaking changes causing 1.0.0 tag
       # The logic below handles the npm publication:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.WORKFLOW_GITHUB_TOKEN }}
         # these if statements ensure that a publication only occurs when
         # a new release is created:
         if: ${{ steps.release.outputs.release_created }}
       - uses: actions/setup-node@v4
         with:
           node-version: 18
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: "https://registry.npmjs.org"
         if: ${{ steps.release.outputs.release_created }}
       - run: |
           git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
@@ -38,8 +40,6 @@ jobs:
           git commit -m "chore: format files"
           git push
           npm publish
-        with:
-          token: ${{secrets.GITHUB_TOKEN}}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         if: ${{ steps.release.outputs.release_created }}
