@@ -2,10 +2,9 @@
 
 ## [0.0.17](https://github.com/ktarmyshov/svelte5kit-localization/compare/v0.0.16...v0.0.17) (2025-03-04)
 
-
 ### Bug Fixes
 
-* test workflow ([b499474](https://github.com/ktarmyshov/svelte5kit-localization/commit/b49947487f2ffcb1ef03bc63f955f11f26845577))
+- test workflow ([b499474](https://github.com/ktarmyshov/svelte5kit-localization/commit/b49947487f2ffcb1ef03bc63f955f11f26845577))
 
 ## [0.0.16](https://github.com/ktarmyshov/svelte5kit-localization/compare/v0.0.15...v0.0.16) (2025-03-04)
 
