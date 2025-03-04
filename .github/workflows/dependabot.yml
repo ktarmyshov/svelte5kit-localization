@@ -25,6 +25,7 @@ jobs:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Build
         run: |
+          echo "$GITHUB_ACTOR@users.noreply.github.com"
           git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
           git config --global user.name "dependabot[bot]"
           npm ci
