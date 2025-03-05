@@ -49,6 +49,6 @@ jobs:
           echo echo The Title of your PR is ${{ github.event.pull_request.title }}
       - name: Check startsWith
         run: |
-          if [[ "${{ startsWith(github.event.pull_request.title, 'the version is: xyz') }}" == "true" ]]; then
+          if [[ "${{ startsWith(github.event.pull_request.title, 'fix(dependabot):') }}" == "true" ]]; then
             echo "startsWith is true"
           fi

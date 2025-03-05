@@ -18,4 +18,4 @@ updates:
       development-dependencies:
         dependency-type: 'development'
     commit-message:
-      prefix: 'fix: chore(dependabot):'
+      prefix: 'fix(dependabot):'
