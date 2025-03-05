@@ -48,7 +48,6 @@ jobs:
           echo "$GITHUB_ACTOR@users.noreply.github.com"
           echo echo The Title of your PR is ${{ github.event.pull_request.title }}
       - name: Check startsWith
+        if: startsWith(github.event.pull_request.title, 'fix(dependabot):')
         run: |
-          if [[ "${{ startsWith(github.event.pull_request.title, 'fix(dependabot):') }}" == "true" ]]; then
-            echo "startsWith is true"
-          fi
+          echo "startsWith is true"
