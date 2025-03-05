@@ -45,7 +45,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const commits = ${{ toJSON(github.event.commits) }};
+            const commits = ${{ toJSON(github.event.pull_request.commits) }};
             let result = false;
             if commits.length > 10 {
               return false;
