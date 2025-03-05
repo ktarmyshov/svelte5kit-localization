@@ -36,20 +36,20 @@ jobs:
           PR_URL: ${{github.event.pull_request.html_url}}
           GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-  release-pr:
-    runs-on: ubuntu-latest
-    # if: github.event.pull_request.actor.login == 'dependabot[bot]' || github.event.pull_request.actor.login == 'github-actions[bot]'
-    steps:
-      - name: Check if this is dependabot commits only
-        id: check_dependabot
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const commits = ${{ toJSON(github.event.pull_request.commits) }};
-            let result = false;
-            if commits.length > 10 {
-              return false;
-            }
-            for (const commit of commits) {
-              console.log(commit);
-            }
+  # release-pr:
+  #   runs-on: ubuntu-latest
+  #   # if: github.event.pull_request.actor.login == 'dependabot[bot]' || github.event.pull_request.actor.login == 'github-actions[bot]'
+  #   steps:
+  #     - name: Check if this is dependabot commits only
+  #       id: check_dependabot
+  #       uses: actions/github-script@v7
+  #       with:
+  #         script: |
+  #           const commits = ${{ toJSON(github.event.pull_request.commits) }};
+  #           let result = false;
+  #           if commits.length > 10 {
+  #             return false;
+  #           }
+  #           for (const commit of commits) {
+  #             console.log(commit);
+  #           }
