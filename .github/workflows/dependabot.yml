@@ -38,7 +38,7 @@ jobs:
 
   release-pr:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.actor.login == 'dependabot[bot]' || github.event.pull_request.actor.login == 'github-actions[bot]'
+    # if: github.event.pull_request.actor.login == 'dependabot[bot]' || github.event.pull_request.actor.login == 'github-actions[bot]'
     steps:
       - name: Check if this is dependabot commits only
         id: check_dependabot
