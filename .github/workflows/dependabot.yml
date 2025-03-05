@@ -1,8 +1,5 @@
 name: Dependabot auto-merge
-on:
-  pull_request:
-    branches:
-      - master
+on: pull_request
 
 permissions:
   contents: write
@@ -11,7 +8,6 @@ permissions:
 jobs:
   dependabot:
     runs-on: ubuntu-latest
-    # if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'owner/my_repo'
     if: github.event.pull_request.actor.login == 'dependabot[bot]'
     steps:
       - name: Dependabot metadata
@@ -19,37 +15,9 @@ jobs:
         uses: dependabot/fetch-metadata@d7267f607e9d3fb96fc2fbe83e0af444713e90b7
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Enable auto-merge for Dependabot PRs
-        # if: contains(steps.metadata.outputs.dependency-names, 'my-dependency') && steps.metadata.outputs.update-type == 'version-update:semver-patch'
-        run: |
-          git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          git config --global user.name "dependabot[bot]"
-          npm ci
-          npm run build
-          # npm run test
-          gh pr merge --auto --merge "$PR_URL"
+        if: steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor'
+        run: gh pr merge --auto --merge "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-  # release-pr:
-  #   runs-on: ubuntu-latest
-  #   # if: github.event.pull_request.actor.login == 'dependabot[bot]' || github.event.pull_request.actor.login == 'github-actions[bot]'
-  #   steps:
-  #     - name: Check if this is dependabot commits only
-  #       id: check_dependabot
-  #       uses: actions/github-script@v7
-  #       with:
-  #         script: |
-  #           const commits = ${{ toJSON(github.event.pull_request.commits) }};
-  #           let result = false;
-  #           if commits.length > 10 {
-  #             return false;
-  #           }
-  #           for (const commit of commits) {
-  #             console.log(commit);
-  #           }
