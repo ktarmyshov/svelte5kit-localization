@@ -22,4 +22,4 @@ jobs:
           npm ci
           npm run check
           npm run lint
-          echo "Should run: npm test"
+          npm test
