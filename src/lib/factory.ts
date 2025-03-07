@@ -139,15 +139,6 @@ class LocalizationFactoryImpl implements ILocalizationFactory {
       };
     });
   }
-  private createService = (config: ServiceConfig): ILocalizationService => {
-    if (!this.config.browser) {
-      return new LocalizationService(config);
-    }
-    if (!this.__instance) {
-      this.__instance = new LocalizationService(config);
-    }
-    return this.__instance;
-  }
   getContextService = (): ILocalizationService => {
     if (!this.config.browser) {
       const service = getContext<Context | undefined>(this.config.contextName)?.service();
@@ -177,6 +168,15 @@ class LocalizationFactoryImpl implements ILocalizationFactory {
     const service = this.createService(_config);
     await service.loadLocalizations(pathname);
     return service;
+  }
+  private createService = (config: ServiceConfig): ILocalizationService => {
+    if (!this.config.browser) {
+      return new LocalizationService(config);
+    }
+    if (!this.__instance) {
+      this.__instance = new LocalizationService(config);
+    }
+    return this.__instance;
   }
 }
 
