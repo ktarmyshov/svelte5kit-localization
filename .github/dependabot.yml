@@ -17,4 +17,3 @@ updates:
         dependency-type: "production"
       development-dependencies:
         dependency-type: "development"
-
