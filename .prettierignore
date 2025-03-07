@@ -6,3 +6,4 @@ yarn.lock
 .svelte-kit/
 CHANGELOG.md
 .github/
+<!-- .changeset/ -->
