@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.25
+
+### Patch Changes
+
+- 976a43c: Updating changeset config
+
 ## 0.0.24
 
 ### Patch Changes
