@@ -44,12 +44,15 @@ export interface ILocalizationFactory {
   setCommonServiceConfig(config: CommonServiceConfig): void;
   commonServiceConfig: CommonServiceConfig;
   importLoaderFactory(): ImportLoadFactory;
-  extractLocales(event: ServerLoadEvent, searchOptions?: ActiveLocaleSearchOptions): ExtractedLocales;
+  extractLocales(
+    event: ServerLoadEvent,
+    searchOptions?: ActiveLocaleSearchOptions
+  ): ExtractedLocales;
   setContextService(service: ILocalizationService): void;
   getContextService(): ILocalizationService;
   initialLoadLocalizations(
     pathname: string,
-    config: InitialServiceConfig,
+    config: InitialServiceConfig
   ): Promise<ILocalizationService>;
 }
 
@@ -64,7 +67,7 @@ class LocalizationFactoryImpl implements ILocalizationFactory {
 
   configure = (config: FactoryConfig) => {
     this.__config = config;
-  }
+  };
   get config() {
     if (!this.__config) {
       throw new Error('Localization Service Factory not initialized, use configure() first');
@@ -76,7 +79,7 @@ class LocalizationFactoryImpl implements ILocalizationFactory {
       throw new Error('At least one available locale must be provided');
     }
     this.__commonServiceConfig = config;
-  }
+  };
   get commonServiceConfig(): CommonServiceConfig {
     if (!this.__commonServiceConfig) {
       throw new Error(
@@ -87,16 +90,20 @@ class LocalizationFactoryImpl implements ILocalizationFactory {
   }
   importLoaderFactory = () => {
     return importLoaderFactory(this.config.importDirPath, this.config.importLoads);
-  }
-  extractLocales = (event: ServerLoadEvent, searchOptions: ActiveLocaleSearchOptions = DefaultActiveLocaleSearchOptions): ExtractedLocales => {
+  };
+  extractLocales = (
+    event: ServerLoadEvent,
+    searchOptions: ActiveLocaleSearchOptions = DefaultActiveLocaleSearchOptions
+  ): ExtractedLocales => {
     return event.untrack(() => {
       const availableLocales = this.commonServiceConfig.availableLocales;
       // Extract requested locales from headers or from navigator
-      const requestedLocales = this.__config?.browser ? [...navigator.languages] :
-        event.request.headers
-          .get('accept-language')
-          ?.split(',')
-          .map((locale) => locale.split(';', 1)[0]) ?? [];
+      const requestedLocales = this.__config?.browser
+        ? [...navigator.languages]
+        : (event.request.headers
+            .get('accept-language')
+            ?.split(',')
+            .map((locale) => locale.split(';', 1)[0]) ?? []);
 
       // Now try to finde the active locale
       let activeLocale: string | null | undefined = undefined;
@@ -129,7 +136,8 @@ class LocalizationFactoryImpl implements ILocalizationFactory {
       }
       // If nothing was found use the first available locale
       if (!activeLocale) {
-        activeLocale = requestedLocales.find((locale) => availableLocales.includes(locale)) ||
+        activeLocale =
+          requestedLocales.find((locale) => availableLocales.includes(locale)) ||
           availableLocales[0];
       }
       return {
@@ -138,7 +146,7 @@ class LocalizationFactoryImpl implements ILocalizationFactory {
         activeLocale
       };
     });
-  }
+  };
   getContextService = (): ILocalizationService => {
     if (!this.config.browser) {
       const service = getContext<Context | undefined>(this.config.contextName)?.service();
@@ -153,13 +161,13 @@ class LocalizationFactoryImpl implements ILocalizationFactory {
       );
     }
     return this.__instance;
-  }
+  };
   setContextService = (service: ILocalizationService) => {
     setContext<Context>(this.config.contextName, { service: () => service });
-  }
+  };
   initialLoadLocalizations = async (
     pathname: string,
-    config: InitialServiceConfig,
+    config: InitialServiceConfig
   ): Promise<ILocalizationService> => {
     const _config = { ...this.commonServiceConfig, ...config };
     if (!_config.activeLocale) {
@@ -168,7 +176,7 @@ class LocalizationFactoryImpl implements ILocalizationFactory {
     const service = this.createService(_config);
     await service.loadLocalizations(pathname);
     return service;
-  }
+  };
   private createService = (config: ServiceConfig): ILocalizationService => {
     if (!this.config.browser) {
       return new LocalizationService(config);
@@ -177,14 +185,10 @@ class LocalizationFactoryImpl implements ILocalizationFactory {
       this.__instance = new LocalizationService(config);
     }
     return this.__instance;
-  }
+  };
 }
 
-
-function importLoaderFactory(
-  importDirPath: string,
-  importLoads: ImportLoads
-): ImportLoadFactory {
+function importLoaderFactory(importDirPath: string, importLoads: ImportLoads): ImportLoadFactory {
   return (importFilePath: string): LoadFunction => {
     return async (locale: string) => {
       const importLocalizationPath = `${importDirPath}/${locale}/${importFilePath}`;
