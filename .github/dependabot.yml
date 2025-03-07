@@ -17,6 +17,4 @@ updates:
         dependency-type: "production"
       development-dependencies:
         dependency-type: "development"
-    commit-message:
-      prefix: "fix(dependabot):"
-    target-branch: dev
+
