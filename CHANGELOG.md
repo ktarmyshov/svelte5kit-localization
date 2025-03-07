@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.23
+
+### Patch Changes
+
+- ac77f1e: Update CI & release workflow. Migrate to changeset.
+
 ## [0.0.22](https://github.com/ktarmyshov/svelte5kit-localization/compare/v0.0.21...v0.0.22) (2025-03-05)
 
 ### Bug Fixes
