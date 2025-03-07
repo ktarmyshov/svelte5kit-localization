@@ -5,14 +5,12 @@ import { namedFormat } from './string.js';
 export type LoadResult<V = string> = {
   [K in string]: LoadResult<V> | V;
 };
-
 export type LoadFunction = (locale: string) => Promise<LoadResult | undefined>;
-
 type Key = string;
 type Route = string | RegExp;
 type FormatFunction = (params?: FormatParams) => string;
 type PrepareFunction = (locale: string, value: string) => FormatFunction;
-export type LoaderModule = {
+type LoaderModule = {
   /**
    * Represents the translation namespace. This key is used as a translation prefix so it should be module-unique. You can access your translation later using `$t('key.yourTranslation')`. It shouldn't include `.` (dot) character.
    */
@@ -37,15 +35,15 @@ export type ServiceConfig = {
   logger?: Logger;
 };
 
-export type FormatParams = {
+type FormatParams = {
   default?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 };
-export type TextFunction = (key: string, params?: FormatParams) => string;
+type TextFunction = (key: string, params?: FormatParams) => string;
 export interface ILocalizationService {
   readonly availableLocales: readonly string[];
-  getActiveLocale(): string;
+  getActiveLocale(): string | undefined;
   setActiveLocale(locale: string): void;
   loadLocalizations(pathname: string): Promise<void>;
   text: TextFunction;
@@ -56,7 +54,7 @@ export class LocalizationService implements ILocalizationService {
   readonly #config: ServiceConfig;
   readonly #availableLocales: readonly string[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #activeLocale: string = $state(undefined as any);
+  #activeLocale: string | undefined = $state(undefined as any);
   // Loaded localizations: locale -> key -> value, flattened and expanded
   readonly #localizations: Map<string, LocalizationMap> = new SvelteMap();
   // Which localizations have alread been loaded: locale -> loader -> boolean
@@ -94,7 +92,7 @@ export class LocalizationService implements ILocalizationService {
     }
   };
   text: TextFunction = (key: string, params?: FormatParams) => {
-    if (!this.#activeLocale) return key;
+    if (!this.#activeLocale) throw new Error('Active locale must be set');
     const formatText = this.#localizations.get(this.#activeLocale)?.get(key);
     if (!formatText) {
       this.#logger?.debug(
@@ -115,7 +113,8 @@ export class LocalizationService implements ILocalizationService {
     };
   };
   loadLocalizations = async (pathname: string) => {
-    if (pathname === '') throw new Error('Pathname must not be empty');
+    if (!pathname || pathname === '') throw new Error('Pathname must not be undefined or empty');
+    if (this.#activeLocale === undefined) throw new Error('Active locale must be set');
     // Get relevant loaders
     const loaders = this.getRelevantLoaders(pathname);
     const loadLocale = this.#activeLocale;

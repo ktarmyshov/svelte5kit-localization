@@ -10,7 +10,7 @@ Written for Svelte 5 reactivity.
 - named format (custom see below)
 - IUC format (via 'intl-messageformat'), not tested yet
 
-No automation yet.
+Not all tested thoroughly.
 
 # Localizations folder `src/lib/localization`
 
@@ -56,7 +56,8 @@ LocalizationFactory.setCommonServiceConfig({
 export const {
   initialLoadLocalizations,
   setContextService: setLocalizationContextService,
-  getContextService: getLocalizationContextService
+  getContextService: getLocalizationContextService,
+  extractLocales
 } = LocalizationFactory;
 
 export function loadLocalizations(pathname: string) {
@@ -70,13 +71,20 @@ export function setActiveLocale(locale: string) {
 # Root `+layout.server.ts`
 
 ```ts
-import { extractLocales } from 'svelte5kit-localization';
+import { extractLocales } from '$lib/localization';
 load(...
 ...
     ...
     return {
       ...
-      // extractLocales uses event.untrack to extract all locales, so it won't trigger reload
+      // extractLocales uses event.untrack to extract data, so it won't trigger reload
+      // Default search options for the active locale
+      // The requested locales are extracted from the headers on the server side or from navigator.languages on the client side
+      // const DefaultActiveLocaleSearchOptions: ActiveLocaleSearchOptions = {
+      //   params: ['lang', 'locale', 'language'],
+      //   searchParams: ['lang', 'locale', 'language'],
+      //   cookies: ['lang', 'locale', 'language']
+      // };
       i18n: extractLocales(event),
     };
 ```
@@ -90,17 +98,11 @@ load(...
     // Get url path without tracking
     // Otherwise this will trigger on every navigation
     const urlpathname = event.untrack(() => event.url.pathname);
-    const requestedLocales = browser ? [...navigator.languages] : event.data.i18n.requestedLocales;
-    // Find the first requested locale that is available
-    const availableLocales = LocalizationFactory.commonServiceConfig.availableLocales;
-    const activeLocale = event.data.i18n.activeLocale
-      || requestedLocales.find((locale) => availableLocales.includes(locale))
-      || availableLocales[0];
     const i18n = await initialLoadLocalizations(
+      urlpathname,
       {
-        activeLocale: activeLocale
+        activeLocale: event.data.i18n.activeLocale
       },
-      urlpathname
     );
     ...
     return {
