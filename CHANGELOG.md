@@ -13,7 +13,7 @@
     - moved to the LocalizationFactory
     - updated so no additional preparation of the activeLocale is necessary (see README)
   - initialLoadLocalization
-    - changed order of params, better readable
+    - changed order of params, better readability
 
 ## 0.0.25
 
