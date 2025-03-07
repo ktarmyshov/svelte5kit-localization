@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.24
+
+### Patch Changes
+
+- 7c16a89: Testing changeset
+
 ## 0.0.23
 
 ### Patch Changes
