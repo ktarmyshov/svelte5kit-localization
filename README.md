@@ -2,8 +2,6 @@
 
 Inspired by https://github.com/sveltekit-i18n/lib.
 
-test without publishing
-
 Written for Svelte 5 reactivity.
 
 - SSR enabled
