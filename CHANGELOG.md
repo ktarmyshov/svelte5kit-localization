@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2
+
+### Patch Changes
+
+- 05df1a8: check publish wihthout version and publish
+
 ## 0.1.1
 
 ### Patch Changes
