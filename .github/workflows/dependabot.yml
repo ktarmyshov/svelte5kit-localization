@@ -11,7 +11,9 @@ jobs:
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     steps:
       - run: ${#${{ github.event.pull_request.title }}}
+        shell: bash
       - run: ${#${{ secrets.BOT_APP_ID }}}
+        shell: bash
       - name: Generate token
         id: generate_token
         uses: tibdex/github-app-token@v2.1
