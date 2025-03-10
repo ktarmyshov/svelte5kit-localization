@@ -32,7 +32,7 @@ jobs:
       - name: Checkout source branch code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
+          ref: ${{ github.head_ref }}
           token: ${{ steps.generate_token.outputs.token }}
 
       - name: Add changesets to PR
