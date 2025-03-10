@@ -23,7 +23,6 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
-      - run: ${{ github.event.pull_request }}
       - run: echo "${{ github.ref_name }}"
       - run: echo "$GITHUB_REF"
       - run: echo "$GITHUB_HEAD_REF"
