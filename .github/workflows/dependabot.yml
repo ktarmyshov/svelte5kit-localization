@@ -37,6 +37,7 @@ jobs:
 
       - name: Add changeset to PR
         run: |
+          echo 
           CHANGESET_FILE="./.changeset/$(uuidgen).md"
           echo "Filename is: $CHANGESET_FILE"
           echo "---" >> $CHANGESET_FILE
@@ -52,8 +53,6 @@ jobs:
           git add $CHANGESET_FILE
           git commit -m "Add changeset for Dependabot PR" --author="mergeprbot[bot] <mergeprbot[bot]@users.noreply.github.com>"
           git push
-        env:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
 
       - name: Enable auto-merge for Dependabot PRs
         if: steps.metadata.outputs.update-type == 'version-update:semver-minor' || steps.metadata.outputs.update-type == 'version-update:semver-patch'
