@@ -26,6 +26,7 @@ jobs:
       - run: ${{ github.event.pull_request }}
       - run: echo "${{ github.ref_name }}"
       - run: echo "$GITHUB_REF"
+      - run: echo "$GITHUB_HEAD_REF"
 
       - name: Checkout source branch code
         uses: actions/checkout@v4
