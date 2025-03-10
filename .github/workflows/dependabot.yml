@@ -23,6 +23,9 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
+      - run: echo "${{ github.event.pull_request }}"
+      - run: echo "${{ github.ref_name }}"
+
       - name: Checkout source branch code
         uses: actions/checkout@v4
         with:
