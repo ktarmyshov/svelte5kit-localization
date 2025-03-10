@@ -18,5 +18,5 @@ updates:
       development-dependencies:
         dependency-type: "development"
     commit-message:
-      prefix: "chore(deps)"
-      prefix-development: "chore(deps-dev)"
+      prefix: "dependabot(deps)"
+      prefix-development: "dependabot(deps-dev)"
