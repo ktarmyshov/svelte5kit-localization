@@ -38,6 +38,7 @@ jobs:
       - name: Add changesets to PR
         run: |
           CHANGESET_FILE="./.changeset/$(uuidgen).md"
+          echo "Filename is: $CHANGESET_FILE"
           echo "---" >> $CHANGESET_FILE
           echo "'svelte5kit-localization': patch" >> $CHANGESET_FILE
           echo "---" >> $CHANGESET_FILE
