@@ -35,7 +35,17 @@ jobs:
           ref: ${{ github.head_ref }}
           token: ${{ steps.generate_token.outputs.token }}
 
+      - name: Check if already commited changeset
+        id: check_changeset
+        run: |
+          if git log --oneline -n 1 | grep -q "Add changeset for Dependabot PR"; then
+            echo "committed=true" >> $GITHUB_OUTPUT
+          else
+            echo "committed=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Add changeset to PR
+        if: steps.check_changeset.outputs.committed == 'false'
         run: |
           echo 
           CHANGESET_FILE="./.changeset/$(uuidgen).md"
@@ -53,6 +63,8 @@ jobs:
           git add $CHANGESET_FILE
           git commit -m "Add changeset for Dependabot PR" --author="mergeprbot[bot] <mergeprbot[bot]@users.noreply.github.com>"
           git push
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
 
       - name: Enable auto-merge for Dependabot PRs
         if: steps.metadata.outputs.update-type == 'version-update:semver-minor' || steps.metadata.outputs.update-type == 'version-update:semver-patch'
