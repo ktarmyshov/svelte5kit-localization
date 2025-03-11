@@ -60,7 +60,7 @@ jobs:
           (steps.metadata.outputs.update-type == 'version-update:semver-minor' || 
           steps.metadata.outputs.update-type == 'version-update:semver-patch') &&
           steps.check_changeset.outputs.committed == 'false'
-        run: gh pr merge --auto --merge --squash "$PR_URL"
+        run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GH_TOKEN: ${{ steps.generate_token.outputs.token }}
