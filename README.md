@@ -1,8 +1,8 @@
 # Summary
 
-Inspired by https://github.com/sveltekit-i18n/lib.
+Localization for SvelteKit with Svelte 5 reactivity.
 
-Written for Svelte 5 reactivity.
+Inspired by https://github.com/sveltekit-i18n/lib.
 
 - SSR enabled
 - lazy loading
