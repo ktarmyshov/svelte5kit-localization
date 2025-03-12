@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4
+
+### Patch Changes
+
+- 162bbd1: dependabot(deps-dev): bump svelte from 5.22.4 to 5.22.6
+- 9a5d26f: dependabot(deps-dev): bump svelte from 5.22.6 to 5.23.0
+
 ## 0.1.3
 
 ### Patch Changes
