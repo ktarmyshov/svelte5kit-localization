@@ -8,7 +8,7 @@ Inspired by https://github.com/sveltekit-i18n/lib.
 - lazy loading
 - some DX improvements
 - named format (custom see below)
-- IUC format (via 'intl-messageformat'), not tested yet
+- ICU format (via 'intl-messageformat'), not tested yet
 
 Not all tested thoroughly.
 
