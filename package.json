@@ -32,7 +32,6 @@
     "format": "prettier --write .",
     "lint": "prettier --check . && eslint .",
     "test": "echo 'No tests yet'",
-    "changeset:release": "changeset",
     "changeset:version": "changeset version && git add --all",
     "changeset:publish": "changeset publish"
   },
