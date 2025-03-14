@@ -32,7 +32,8 @@ jobs:
           jq -r '.version' package.json
           PKG_NAME=$(jq -r '.name' package.json)
           PKG_VERSION=$(jq -r '.version' package.json)
-          echo "name=$PKG_NAME version=$PKG_VERSION" > $GITHUB_OUTPUT
+          echo "name=$PKG_NAME" >> $GITHUB_OUTPUT
+          echo "version=$PKG_VERSION" >> $GITHUB_OUTPUT
           if [ -z "$PKG_NAME" ] || [ -z "$PKG_VERSION" ]; then
             echo "Failed to get package info"
             exit 1
