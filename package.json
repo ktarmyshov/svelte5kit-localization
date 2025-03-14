@@ -74,7 +74,7 @@
     "svelte-check": "^4.1.5",
     "typescript": "^5.0.0",
     "typescript-eslint": "^8.19.0",
-    "vite": "^6.2.1"
+    "vite": "^6.2.2"
   },
   "dependencies": {
     "intl-messageformat": "^10.7.15",
