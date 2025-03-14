@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.5
+
+### Patch Changes
+
+- 6048968: dependabot(deps-dev): bump vite from 6.2.1 to 6.2.2
+- 4628ed7: dependabot(deps-dev): bump @sveltejs/kit from 2.19.0 to 2.19.1
+
 ## 0.1.4
 
 ### Patch Changes
