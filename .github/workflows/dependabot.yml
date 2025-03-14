@@ -26,11 +26,14 @@ jobs:
           ref: ${{ github.head_ref }}
           token: ${{ steps.generate_token.outputs.token }}
 
+      - id: get-package-info
+        run: echo "echo name=$(jq -r '.name' package.json) version=$(jq -r '.version' package.json)" > $GITHUB_OUTPUT
+
       - id: add_changeset
         uses: ktarmyshov/github-actions/actions/add_pr_changeset@14a4ec0614dffcafcdc429004489877c54bd0c81
         with:
           token: ${{ steps.generate_token.outputs.token }}
-          package-name: svelte-adapter-azure-swa
+          package-name: ${{ steps.get-package-info.outputs.name }}
           version-update: patch
           changeset-message: "${{ github.event.pull_request.title }}"
           commit-user: mergeprbot[bot]
