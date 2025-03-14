@@ -37,7 +37,6 @@ jobs:
             echo "Failed to get package info"
             exit 1
           fi
-          echo "echo name=$(jq -r '.name' package.json) version=$(jq -r '.version' package.json)" > $GITHUB_OUTPUT
 
       - id: add_changeset
         uses: ktarmyshov/github-actions/actions/add_pr_changeset@14a4ec0614dffcafcdc429004489877c54bd0c81
