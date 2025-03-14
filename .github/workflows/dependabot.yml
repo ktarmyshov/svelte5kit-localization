@@ -28,8 +28,6 @@ jobs:
 
       - id: get-package-info
         run: |
-          jq -r '.name' package.json
-          jq -r '.version' package.json
           PKG_NAME=$(jq -r '.name' package.json)
           PKG_VERSION=$(jq -r '.version' package.json)
           echo "name=$PKG_NAME" >> $GITHUB_OUTPUT
