@@ -27,7 +27,17 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
 
       - id: get-package-info
-        run: echo "echo name=$(jq -r '.name' package.json) version=$(jq -r '.version' package.json)" > $GITHUB_OUTPUT
+        run: |
+          jq -r '.name' package.json
+          jq -r '.version' package.json
+          PKG_NAME=$(jq -r '.name' package.json)
+          PKG_VERSION=$(jq -r '.version' package.json)
+          echo "name=$PKG_NAME version=$PKG_VERSION" > $GITHUB_OUTPUT
+          if [ -z "$PKG_NAME" ] || [ -z "$PKG_VERSION" ]; then
+            echo "Failed to get package info"
+            exit 1
+          fi
+          echo "echo name=$(jq -r '.name' package.json) version=$(jq -r '.version' package.json)" > $GITHUB_OUTPUT
 
       - id: add_changeset
         uses: ktarmyshov/github-actions/actions/add_pr_changeset@14a4ec0614dffcafcdc429004489877c54bd0c81

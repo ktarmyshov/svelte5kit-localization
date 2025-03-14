@@ -9,6 +9,9 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    ignore:
+      - dependency-name: "npm"
+        versions: ["<10.0.0", ">=11.0.0"]
     # groups:
     #   production-dependencies:
     #     dependency-type: "production"
