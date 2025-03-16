@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.6
+
+### Patch Changes
+
+- 8d09ab9: dependabot(deps-dev): bump @sveltejs/kit from 2.19.1 to 2.19.2
+
 ## 0.1.5
 
 ### Patch Changes
