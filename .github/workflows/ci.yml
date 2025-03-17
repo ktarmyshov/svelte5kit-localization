@@ -15,7 +15,7 @@ permissions:
   contents: read # to fetch code (actions/checkout)
 
 jobs:
-  lint:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
