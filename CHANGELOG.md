@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.8
+
+### Patch Changes
+
+- 792539d: dependabot(deps-dev): bump @sveltejs/kit from 2.19.2 to 2.20.0
+- a6de338: dependabot(deps-dev): bump eslint-plugin-svelte from 3.2.0 to 3.3.1
+
 ## 0.1.7
 
 ### Patch Changes
