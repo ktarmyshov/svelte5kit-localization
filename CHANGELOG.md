@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.10
+
+### Patch Changes
+
+- ca12a6b: dependabot(deps-dev): bump eslint-plugin-svelte from 3.3.2 to 3.3.3
+- aeef80e: dependabot(deps-dev): bump typescript-eslint from 8.26.1 to 8.27.0
+
 ## 0.1.9
 
 ### Patch Changes
