@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.11
+
+### Patch Changes
+
+- 25a636f: dependabot(deps-dev): bump @sveltejs/adapter-auto from 4.0.0 to 5.0.0
+
 ## 0.1.10
 
 ### Patch Changes
