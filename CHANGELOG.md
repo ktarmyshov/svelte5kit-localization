@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.12
+
+### Patch Changes
+
+- 9e1a05b: dependabot(deps-dev): bump @eslint/js from 9.22.0 to 9.23.0
+- 0cbdf0a: dependabot(deps-dev): bump @sveltejs/kit from 2.20.1 to 2.20.2
+- 779b577: dependabot(deps-dev): bump svelte from 5.23.2 to 5.25.1
+- 941f210: dependabot(deps-dev): bump eslint from 9.22.0 to 9.23.0
+
 ## 0.1.11
 
 ### Patch Changes
