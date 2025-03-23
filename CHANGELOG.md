@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.13
+
+### Patch Changes
+
+- b919cb8: dependabot(deps): bump intl-messageformat from 10.7.15 to 10.7.16 in the production-dependencies group
+- 429ef35: dependabot(deps-dev): bump svelte from 5.25.1 to 5.25.3 in the development-dependencies group
+
 ## 0.1.12
 
 ### Patch Changes
