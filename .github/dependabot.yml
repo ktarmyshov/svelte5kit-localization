@@ -19,5 +19,5 @@ updates:
         patterns:
           - "*"
     commit-message:
-      prefix: "dependabot(deps)"
-      prefix-development: "dependabot(deps-dev)"
+      prefix: "dependabot"
+      prefix-development: "dependabot"
