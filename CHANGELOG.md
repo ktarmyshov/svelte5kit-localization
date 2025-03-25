@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.14
+
+### Patch Changes
+
+- 0166b3e: dependabot: bump the all group with 2 updates
+
 ## 0.1.13
 
 ### Patch Changes
