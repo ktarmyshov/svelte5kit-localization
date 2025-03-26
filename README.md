@@ -1,3 +1,4 @@
+[![CI](https://github.com/ktarmyshov/svelte5kit-localization/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/ktarmyshov/svelte5kit-localization/actions/workflows/ci.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ktarmyshov_svelte-adapter-azure-swa&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ktarmyshov_svelte-adapter-azure-swa)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=ktarmyshov_svelte-adapter-azure-swa&metric=bugs)](https://sonarcloud.io/summary/new_code?id=ktarmyshov_svelte-adapter-azure-swa)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=ktarmyshov_svelte-adapter-azure-swa&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=ktarmyshov_svelte-adapter-azure-swa)
@@ -6,8 +7,6 @@
 # Summary
 
 Localization for SvelteKit with Svelte 5 reactivity.
-
-Inspired by https://github.com/sveltekit-i18n/lib.
 
 - SSR enabled
 - lazy loading
