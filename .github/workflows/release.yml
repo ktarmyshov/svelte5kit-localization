@@ -15,6 +15,17 @@ on:
 
 permissions: {}
 jobs:
+  if_error_or_failure:
+    runs-on: ubuntu-latest
+    if: >-
+      github.event.state == 'error' ||
+      github.event.state == 'failure' ||
+      github.event.state == 'success'
+    steps:
+      - env:
+          DESCRIPTION: ${{ github.event.description }}
+        run: |
+          echo The status is error or failed: $DESCRIPTION
   echo:
     runs-on: ubuntu-latest
     steps:
