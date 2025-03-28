@@ -15,6 +15,7 @@ concurrency:
 permissions:
   contents: read # to fetch code (actions/checkout)
 
+#XXX
 jobs:
   echo:
     runs-on: ubuntu-latest
