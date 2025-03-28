@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.15
+
+### Patch Changes
+
+- 21c9c11: Fix: only one successfull load is executed
+  - SSR tests for named format
+
 ## 0.1.14
 
 ### Patch Changes
