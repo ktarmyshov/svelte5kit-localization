@@ -3,3 +3,4 @@
 ---
 
 Fix: only one successfull load is executed
+Update: SSR tests for named format
