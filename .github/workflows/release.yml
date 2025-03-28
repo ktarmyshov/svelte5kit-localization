@@ -1,17 +1,12 @@
 name: Release
 
 on:
-  # status
-  check_suite:
-    types: [completed]
-  # check_run:
-  #   types: [completed]
-  # workflow_run:
-  #   workflows: ["CI"]
-  #   types:
-  #     - completed
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
 
-# concurrency: ${{ github.workflow }}-${{ github.ref }}
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions: {}
 jobs:
