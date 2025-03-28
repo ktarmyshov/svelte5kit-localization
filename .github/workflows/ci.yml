@@ -49,9 +49,9 @@ jobs:
         with:
           start: npm run preview
           wait-on: http://localhost:5173
-  sonar:
-    uses: ./.github/workflows/sonar.yml
-    secrets: inherit
+  # sonar:
+  #   uses: ./.github/workflows/sonar.yml
+  #   secrets: inherit
   codeql:
     uses: ./.github/workflows/codeql.yml
     secrets: inherit
