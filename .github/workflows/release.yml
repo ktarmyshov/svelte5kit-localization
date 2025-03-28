@@ -20,7 +20,8 @@ jobs:
     if: >-
       github.event.state == 'error' ||
       github.event.state == 'failure' ||
-      github.event.state == 'success'
+      github.event.state == 'success' ||
+      github.event.state == 'pending'
     steps:
       - env:
           DESCRIPTION: ${{ github.event.description }}
