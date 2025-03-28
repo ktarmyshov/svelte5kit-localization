@@ -2,12 +2,10 @@ name: Release
 
 on:
   # status
-  # check_suite:
-  #   types: [completed]
-  #   branches:
-  #     - master
-  check_run:
+  check_suite:
     types: [completed]
+  # check_run:
+  #   types: [completed]
   # workflow_run:
   #   workflows: ["CI"]
   #   types:
