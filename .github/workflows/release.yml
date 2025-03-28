@@ -2,10 +2,10 @@ name: Release
 
 on:
   # status
-  check_suite:
-    types: [completed]
-    branches:
-      - master
+  # check_suite:
+  #   types: [completed]
+  #   branches:
+  #     - master
   check_run:
     types: [completed]
   # workflow_run:
