@@ -43,6 +43,6 @@ jobs:
         with:
           start: npm run preview
           wait-on: http://localhost:5173
-  sonarqube-workflow:
+  code-scan:
     uses: ./.github/workflows/codescan.yml
     secrets: inherit
