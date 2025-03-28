@@ -1,0 +1,6 @@
+{
+  "zero": "no apples",
+  "one": "one apple",
+  "many": "{count} apples",
+  "other": "{count} apples"
+}

@@ -145,8 +145,6 @@ export class LocalizationService implements ILocalizationService {
         for (const [key, value] of flatStringData) {
           localeLocalization.set(key, prepare(loadLocale, value));
         }
-        // Successfully loaded, no need to try other locales
-        break;
       } catch (error) {
         this.#logger?.error(
           `Failed to load localization for locale ${loadLocale} and loader ${loader.key}/${loader.routes ?? 'all'}: ${error}`

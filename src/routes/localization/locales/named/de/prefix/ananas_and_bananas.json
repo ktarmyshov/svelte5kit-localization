@@ -1,0 +1,14 @@
+{
+  "ananas": {
+    "zero": "keine Ananas",
+    "one": "eine Ananas",
+    "many": "{count} Ananas",
+    "other": "{count} Ananas"
+  },
+  "bananas": {
+    "zero": "keine Bananen",
+    "one": "eine Banane",
+    "many": "{count} Bananen",
+    "other": "{count} Bananen"
+  }
+}

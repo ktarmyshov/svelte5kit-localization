@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getLocalizationContextService } from './localization/index.js';
+  import { getLocalizationContextService } from '../localization/index.js';
 
   const { text, getPSText } = getLocalizationContextService();
   const psappleText = getPSText('apples');
