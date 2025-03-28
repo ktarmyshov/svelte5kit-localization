@@ -14,8 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read # to fetch code (actions/checkout)
-      # required for all workflows
-      security-events: write
     # Disabled at the moment
     steps:
       - uses: actions/checkout@v4
