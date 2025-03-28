@@ -14,7 +14,6 @@ concurrency:
 
 permissions:
   contents: read # to fetch code (actions/checkout)
-  security-events: write
 
 jobs:
   echo:
@@ -56,3 +55,11 @@ jobs:
   codeql:
     uses: ./.github/workflows/codeql.yml
     secrets: inherit
+    permissions:
+      # required for all workflows
+      security-events: write
+      # required to fetch internal or private CodeQL packs
+      packages: read
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
