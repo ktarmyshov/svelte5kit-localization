@@ -2,5 +2,5 @@
 'svelte5kit-localization': patch
 ---
 
-- Fix: only one successfull load is executed
-- Update: SSR tests for named format
+Fix: only one successfull load is executed
+- SSR tests for named format
