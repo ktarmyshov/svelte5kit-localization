@@ -12,6 +12,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+#  XXX
 permissions:
   contents: read # to fetch code (actions/checkout)
 
