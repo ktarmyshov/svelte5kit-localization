@@ -1,13 +1,6 @@
 on:
   workflow_call:
-    # secrets:
-    #   SONAR_TOKEN:
-    #     required: true
-    #     description: "SonarQube token"
-    outputs:
-      sonarqube_url:
-        description: "SonarQube URL"
-        value: ${{ steps.sonarqube.outputs.sonarqube_url }}
+
 jobs:
   sonarqube:
     runs-on: ubuntu-latest
