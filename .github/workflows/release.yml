@@ -2,8 +2,6 @@ name: Release
 
 on:
   status:
-    types:
-      - success
   # workflow_run:
   #   workflows: ["CI"]
   #   types:
