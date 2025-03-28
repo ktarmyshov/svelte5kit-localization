@@ -2,7 +2,7 @@ name: "SonarQube Scan"
 
 on:
   workflow_call:
-  # push:
+  # push:XX
   #   branches: ["master"]
   # pull_request:
   #   branches: ["master"]
