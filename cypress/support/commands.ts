@@ -1,4 +1,7 @@
 /// <reference types="cypress" />
+
+import DOMPurify from 'dompurify';
+
 // ***********************************************
 // This example commands.ts shows you how to
 // create various custom commands and overwrite
@@ -41,7 +44,8 @@ export function ssrVisit(url: string) {
   cy.request(url)
     .its('body')
     .then((html) => {
-      html = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+      //html = html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+      html = DOMPurify.sanitize(html, { FORBID_TAGS: ['script'] });
       cy.document().invoke({ log: false }, 'write', html);
     });
   cy.get('script').should('not.exist');
