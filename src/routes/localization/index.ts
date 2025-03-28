@@ -48,7 +48,7 @@ LocalizationFactory.setCommonServiceConfig({
       key: 'regex.ananas_and_bananas',
       load: importLoaderFactory('regex/ananas_and_bananas.json'),
       // Regex that matches *anana*
-      routes: [/.*ana.*/]
+      routes: [/.*anana.*/]
     }
   ],
   logger: dev && browser ? console : undefined
