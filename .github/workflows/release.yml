@@ -1,11 +1,13 @@
 name: Release
 
 on:
-  status
-  # check_suite:
-  #   types: [completed]
-  #   branches:
-  #     - master
+  # status
+  check_suite:
+    types: [completed]
+    branches:
+      - master
+  check_run:
+    types: [completed]
   # workflow_run:
   #   workflows: ["CI"]
   #   types:
@@ -15,18 +17,6 @@ on:
 
 permissions: {}
 jobs:
-  if_error_or_failure:
-    runs-on: ubuntu-latest
-    if: >-
-      github.event.state == 'error' ||
-      github.event.state == 'failure' ||
-      github.event.state == 'success' ||
-      github.event.state == 'pending'
-    steps:
-      - env:
-          DESCRIPTION: ${{ github.event.description }}
-        run: |
-          echo The status is error or failed: $DESCRIPTION
   echo:
     runs-on: ubuntu-latest
     steps:
@@ -34,7 +24,11 @@ jobs:
         shell: cat {0}
   release:
     # prevents this action from running on forks
-    if: ${{ github.repository == 'ktarmyshov/svelte5kit-localization' && github.ref == 'refs/heads/master' && github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success' }}
+    if: >-
+      github.repository == 'ktarmyshov/svelte5kit-localization' && 
+      github.ref == 'refs/heads/master' && 
+      github.event.workflow_run.event == 'push' && 
+      github.event.workflow_run.conclusion == 'success'
     permissions:
       contents: write # to create release (changesets/action)
       id-token: write # OpenID Connect token needed for provenance
