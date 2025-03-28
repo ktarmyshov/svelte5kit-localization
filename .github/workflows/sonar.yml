@@ -1,14 +1,22 @@
+name: "SonarQube Scan"
+
 on:
   workflow_call:
-
-permissions:
-  contents: read # to fetch code (actions/checkout)
+  # push:
+  #   branches: ["master"]
+  # pull_request:
+  #   branches: ["master"]
+  schedule:
+    - cron: "37 9 * * 4"
 
 jobs:
-  sonarqube:
-    # Disabled at the moment
-    if: ${{ 'true' == 'false' }}
+  analyze:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read # to fetch code (actions/checkout)
+      # required for all workflows
+      security-events: write
+    # Disabled at the moment
     steps:
       - uses: actions/checkout@v4
         with:
