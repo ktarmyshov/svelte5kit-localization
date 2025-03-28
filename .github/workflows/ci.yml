@@ -44,4 +44,4 @@ jobs:
           start: npm run preview
           wait-on: http://localhost:5173
   sonarqube:
-    uses: ./.github/workflows/codescan.yml@v5
+    uses: ./.github/workflows/codescan.yml
