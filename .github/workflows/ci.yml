@@ -14,6 +14,7 @@ concurrency:
 
 permissions:
   contents: read # to fetch code (actions/checkout)
+  security-events: write
 
 jobs:
   echo:
