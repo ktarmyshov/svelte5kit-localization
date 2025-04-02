@@ -28,6 +28,8 @@ runs:
       run: |
         declare changesets_json="[]"
         # loop through updated-dependencies-json array
+        echo "${{ inputs.updated-dependencies-json }}"
+        "${{ inputs.updated-dependencies-json }}" | jq -r '.[] | @base64'
         echo "${{ inputs.updated-dependencies-json }}" | jq -r '.[] | @base64' | while read dep; do
           echo "dep: $dep"
           _jq() {
