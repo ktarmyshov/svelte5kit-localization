@@ -29,34 +29,21 @@ runs:
           _jq() {
             echo ${dep} | base64 --decode | jq -r ${1}
           }
-          echo "jq: $(_jq '.')"
           PKG_DIR=$(_jq '.directory')
-          echo "PKG_DIR: $PKG_DIR"
           PKG_DIR=${PKG_DIR:1}
           if [ -z "$PKG_DIR" ]; then
             # if PKG_DIR is empty, set it to the current directory
             PKG_DIR="."
           fi
-          echo "PKG_DIR: $PKG_DIR"
           PKG_JSON="$PKG_DIR/package.json"
-          echo "PKG_JSON: $PKG_JSON"
           PKG_NAME=$(jq -r '.name' $PKG_JSON)
-          echo "PKG_NAME: $PKG_NAME"
           DEP_NAME=$(_jq '.dependencyName')
-          echo "DEP_NAME: $DEP_NAME"
           DEP_PREV_VERSION=$(_jq '.prevVersion')
-          echo "DEP_PREV_VERSION: $DEP_PREV_VERSION"
           DEP_NEW_VERSION=$(_jq '.newVersion')
-          echo "DEP_NEW_VERSION: $DEP_NEW_VERSION"
           DEP_DEPENDENCY_TYPE=$(_jq '.dependencyType')
-          echo "DEP_DEPENDENCY_TYPE: $DEP_DEPENDENCY_TYPE"
           DEP_UPDATE_TYPE=$(_jq '.updateType') 
-          echo "DEP_UPDATE_TYPE: $DEP_UPDATE_TYPE"
-          # version-update:semver-major, version-update:semver-minor, version-update:semver-patch => semver-major, semver-minor, semver-patch
           DEP_SEMVER_TYPE=$(echo $DEP_UPDATE_TYPE | cut -d':' -f2)
-          echo "DEP_SEMVER_TYPE: $DEP_SEMVER_TYPE"
           DEP_CHANGESET_TYPE=$(echo ${{ tojson(inputs.version-update-map) }} | jq -r --arg semver_type "$DEP_SEMVER_TYPE" '.[$semver_type]')
-          echo "DEP_CHANGESET_TYPE: $DEP_CHANGESET_TYPE"
           # replace / with - in DEP_NAME
           DEP_NAME_CHANGESET=${DEP_NAME//\//-}
           if [ "$PKG_DIR" = "." ]; then
@@ -66,7 +53,6 @@ runs:
             PKG_DIR_CHANGESET=${PKG_DIR//\//-}
             CHANGESET_FILE="./.changeset/${PKG_DIR_CHANGESET}-${PKG_NAME}-${DEP_NAME_CHANGESET}.md"
           fi
-          echo "CHANGESET_FILE: $CHANGESET_FILE"
           # if file does not exist, create it
           # if it exists, append to it
           if [ ! -f $CHANGESET_FILE ]; then
@@ -77,7 +63,6 @@ runs:
             echo "" >> $CHANGESET_FILE
           fi
           # append to changeset file
-          # $DEP_PREV_VERSION & $DEP_NEW_VERSION seem not to be set, so do with if statement for the future: if they are set then add to string, otherwise just say "update $DEP_NAME"
           if [ -n "$DEP_PREV_VERSION" ] || [ -n "$DEP_NEW_VERSION" ]; then
             UPDATE_STRING="dependabot: update $DEP_NAME from $DEP_PREV_VERSION to $DEP_NEW_VERSION"
           else
@@ -87,6 +72,7 @@ runs:
           if grep -q "$UPDATE_STRING" $CHANGESET_FILE; then
             echo "Update string already in file, skipping"
           else
+            echo "Update string not in file, adding it"
             echo "$UPDATE_STRING" >> $CHANGESET_FILE
             # append output - json array of created or updated changeset files
             changesets_json=$(echo $changesets_json | jq --arg file $CHANGESET_FILE '. + [$file]')
@@ -95,11 +81,5 @@ runs:
         changesets_json=$(echo $changesets_json | jq -c '.')
         echo "changesets-json=$changesets_json" >> $GITHUB_OUTPUT
 
-    - run: ls -la .changeset
-      shell: bash
     - run: cat .changeset/*.md
-      shell: bash
-    - run: echo ${{ steps.generate-changesets.outputs.changesets-json }}
-      shell: bash
-    - run: echo ${{ tojson(steps.generate-changesets.outputs.changesets-json) }} | jq -r '.[]'
       shell: bash
