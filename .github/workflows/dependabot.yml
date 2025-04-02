@@ -70,7 +70,6 @@ jobs:
       - uses: ./.github/actions/dependabot-npm-generate-changesets
         with:
           updated-dependencies-json: ${{ tojson(steps.metadata.outputs.updated-dependencies-json) }}
-          version-update-map: '{"semver-patch": "patch", "semver-minor": "patch", "semver-major": "patch"}'
 
       - run: |
           git add .changeset
