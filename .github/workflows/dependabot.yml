@@ -13,3 +13,4 @@ jobs:
   #       shell: cat {0}
   dependabot:
     uses: ktarmyshov/github-actions/.github/workflows/dependabot.yml@a04c41924253afe9f74c5bd9e3268bb54046c7f5
+    secrets: inherit
