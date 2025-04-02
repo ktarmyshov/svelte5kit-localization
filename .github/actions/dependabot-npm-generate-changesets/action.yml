@@ -57,9 +57,9 @@ runs:
           echo "DEP_SEMVER_TYPE: $DEP_SEMVER_TYPE"
           DEP_CHANGESET_TYPE=$(echo ${{ tojson(inputs.version-update-map) }} | jq -r --arg semver_type "$DEP_SEMVER_TYPE" '.[$semver_type]')
           echo "DEP_CHANGESET_TYPE: $DEP_CHANGESET_TYPE"
-          # changeset file = ./.changeset/<directory-with-replaced-special-symbols>-<package-name>.md
+          # replace / with - in DEP_NAME
           DEP_NAME_CHANGESET=${DEP_NAME//\//-}
-          if ["$PKG_DIR" == "."]; then
+          if [ "$PKG_DIR" = "." ]; then
             CHANGESET_FILE="./.changeset/${PKG_NAME}-${DEP_NAME_CHANGESET}.md"
           else
             # replace / with - in PKG_DIR
