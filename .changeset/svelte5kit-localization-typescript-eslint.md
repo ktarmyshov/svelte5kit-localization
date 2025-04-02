@@ -17,3 +17,4 @@ dependabot: update typescript-eslint
 dependabot: update typescript-eslint
 dependabot: update typescript-eslint
 dependabot: update typescript-eslint
+dependabot: update typescript-eslint
