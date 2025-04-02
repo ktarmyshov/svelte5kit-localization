@@ -30,6 +30,10 @@ runs:
         # loop through updated-dependencies-json array
         echo "${{ inputs.updated-dependencies-json }}"
         echo "${{ inputs.updated-dependencies-json }}" | jq -r '.[]'
+                for dep in "${{ inputs.updated-dependencies-json }}" | jq -r '.[]'; do
+          echo "dep: $dep"
+        done
+        exit 1
         for dep in "${{ inputs.updated-dependencies-json }}" | jq -r '.[]'; do
           echo "dep: $dep"
           _jq() {
