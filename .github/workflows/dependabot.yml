@@ -47,6 +47,18 @@ jobs:
         shell: cat {0}
       - run: ${{ steps.metadata.outputs.updated-dependencies-json }}
         shell: cat {0}
+      # read array from echo steps.dependabot-metadata.outputs.updated-dependencies-json
+      - run: |
+          echo "${{ steps.metadata.outputs.updated-dependencies-json }}"
+          echo "${{ steps.metadata.outputs.updated-dependencies-json }}" | jq -r '.'
+          exit -1
+          echo "${{ steps.metadata.outputs.updated-dependencies-json }}" | jq -r '.[]'
+          exit -1
+          # for dep in "${{ steps.metadata.outputs.updated-dependencies-json }}" | jq -r '.[]'; do
+          #   echo "dep: $dep"
+          # done
+          # exit -1
+        shell: bash
 
       - uses: actions/checkout@v4
         with:
