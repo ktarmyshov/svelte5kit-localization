@@ -95,5 +95,9 @@ runs:
       shell: bash
     - run: cat .changeset/*.md
       shell: bash
+    - run: echo ${{ steps.generate-changesets.outputs.changesets-json }}
+      shell: bash
+    - run: echo ${{ steps.generate-changesets.outputs.changesets-json }} | jq -r '.[]'
+      shell: bash
     - run: exit -1
       shell: bash
