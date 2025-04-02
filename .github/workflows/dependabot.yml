@@ -73,6 +73,11 @@ jobs:
 
       - run: |
           git add .changeset
+          # Check if there are any changes to commit
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit"
+            exit 0
+          fi
           git commit -m "Add changesets for Dependabot PR"
           git push
         env:
