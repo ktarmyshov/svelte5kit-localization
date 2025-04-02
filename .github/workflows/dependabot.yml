@@ -47,6 +47,8 @@ jobs:
         shell: cat {0}
       - run: ${{ steps.metadata.outputs.updated-dependencies-json }}
         shell: cat {0}
+      - run: exit -1
+        shell: bash
       # read array from echo steps.dependabot-metadata.outputs.updated-dependencies-json
       - run: |
           echo "${{ steps.metadata.outputs.updated-dependencies-json }}"
