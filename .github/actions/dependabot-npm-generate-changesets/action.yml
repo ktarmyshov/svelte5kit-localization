@@ -24,7 +24,7 @@ runs:
       run: |
         declare changesets_json="[]"
         # loop through updated-dependencies-json array
-        for dep in $(echo ${{ inputs.updated-dependencies-json }} | jq -r '.[] | @base64'); do
+        for dep in $(echo ${{ inputs.updated-dependencies-json }} | jq -r '.[]' | base64); do
           echo "dep: $dep"
           _jq() {
             echo ${dep} | base64 --decode | jq -r ${1}
