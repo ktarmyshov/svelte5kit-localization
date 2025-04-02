@@ -24,3 +24,4 @@ dependabot: update @sveltejs/kit
 dependabot: update @sveltejs/kit
 dependabot: update @sveltejs/kit
 dependabot: update @sveltejs/kit
+dependabot: update @sveltejs/kit
