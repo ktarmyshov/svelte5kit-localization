@@ -50,8 +50,6 @@ jobs:
       # read array from echo steps.dependabot-metadata.outputs.updated-dependencies-json
       - run: |
           echo "${{ steps.metadata.outputs.updated-dependencies-json }}"
-          echo "${{ steps.metadata.outputs.updated-dependencies-json }}" | jq -r '.'
-          exit -1
           echo "${{ steps.metadata.outputs.updated-dependencies-json }}" | jq -r '.[]'
           exit -1
           # for dep in "${{ steps.metadata.outputs.updated-dependencies-json }}" | jq -r '.[]'; do
