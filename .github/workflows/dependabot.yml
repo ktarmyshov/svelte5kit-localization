@@ -46,9 +46,9 @@ jobs:
       - run: ${{ tojson(steps.metadata.outputs.updated-dependencies-json) }}
         shell: cat {0}
       - run: ${{ steps.metadata.outputs.updated-dependencies-json }}
-        shell: cat {0} > $RUNNER_TEMPdependencies.json
+        shell: cat {0} > ${{ runner.temp }}/dependencies.json
       - run: |
-          cat $RUNNER_TEMP/dependencies.json
+          cat ${{ runner.temp }}/dependencies.json
           exit -1
         shell: bash
       # read array from echo steps.dependabot-metadata.outputs.updated-dependencies-json
