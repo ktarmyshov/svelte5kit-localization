@@ -99,5 +99,3 @@ runs:
       shell: bash
     - run: echo ${{ tojson(steps.generate-changesets.outputs.changesets-json) }} | jq -r '.[]'
       shell: bash
-    - run: exit -1
-      shell: bash
