@@ -87,6 +87,7 @@ runs:
           changesets_json=$(echo $changesets_json | jq --arg file $CHANGESET_FILE '. + [$file]')
           echo "changesets-json: $changesets_json"
         done
+        changesets_json=$(echo $changesets_json | jq -c '.')
         echo "changesets-json: '$changesets_json'"
         echo "changesets-json='$changesets_json'" >> $GITHUB_OUTPUT
 
