@@ -19,41 +19,15 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - run: |
+    - id: generate-changesets
+      shell: bash
+      run: |
+        declare changesets_json="[]"
+        # loop through updated-dependencies-json array
         for dep in $(echo ${{ inputs.updated-dependencies-json }} | jq -r '.[] | @base64'); do
           echo "dep: $dep"
           _jq() {
             echo ${dep} | base64 --decode | jq -r ${1}
-          }
-          echo "jq: $(_jq '.')"
-          echo "jq: $(_jq '.directory')"
-          echo "jq: $(_jq '.dependencyName')"
-          echo "jq: $(_jq '.prevVersion')"
-          echo "jq: $(_jq '.newVersion')"
-          echo "jq: $(_jq '.dependencyType')"
-          echo "jq: $(_jq '.updateType')"
-          echo "jq: $(_jq '.updateType' | cut -d':' -f2)"
-        done
-      shell: bash
-    - run: exit -1
-      shell: bash
-    - id: generate-changesets
-      shell: bash
-      # scan updated-dependencies-json array from (dependabot/fetch-metadata)
-      # get package name from .directory/package.json
-      # get version-update from dependabot/fetch-metadata and map it to changeset type
-      # create changeset file in .changeset directory per updated dependency
-      run: |
-        declare changesets_json="[]"
-        # loop through updated-dependencies-json array
-        for dep in echo ${{ inputs.updated-dependencies-json }} | jq -r '.[]'; do
-          echo "dep: $dep"
-        done
-        exit -1
-        for dep in "${{ inputs.updated-dependencies-json }}" | jq -r '.[]'; do
-          echo "dep: $dep"
-          _jq() {
-            echo ${dep} | jq -r ${1}
           }
           echo "jq: $(_jq '.')"
           PKG_DIR=$(_jq '.directory')
@@ -102,5 +76,7 @@ runs:
         echo "changesets-json=$changesets_json" >> $GITHUB_OUTPUT
         echo "changesets-json: $changesets_json"
 
+    - run: ls -la .changeset
+      shell: bash
     - run: exit -1
       shell: bash
