@@ -34,7 +34,7 @@ runs:
           echo "PKG_DIR: $PKG_DIR"
           PKG_DIR=${PKG_DIR:1}
           echo "PKG_DIR: $PKG_DIR"
-          PKG_JSON="$PKG_DIR/package.json"
+          PKG_JSON="${PKG_DIR}package.json"
           echo "PKG_JSON: $PKG_JSON"
           PKG_NAME=$(jq -r '.name' $PKG_JSON)
           echo "PKG_NAME: $PKG_NAME"
