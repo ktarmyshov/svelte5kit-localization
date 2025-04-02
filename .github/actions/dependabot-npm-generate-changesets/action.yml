@@ -20,7 +20,7 @@ runs:
   using: "composite"
   steps:
     - run: |
-        for dep in $(echo ${{ inputs.updated-dependencies-json }} | jq -r '.[]'); do
+        for dep in $(echo ${{ inputs.updated-dependencies-json }} | jq -r '.[]' | @base64); do
           echo "dep: $dep"
         done
       shell: bash
