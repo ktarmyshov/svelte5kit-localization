@@ -6,11 +6,11 @@ permissions:
   pull-requests: write
 
 jobs:
-  echo:
-    runs-on: ubuntu-latest
-    steps:
-      - run: ${{ tojson(github) }}
-        shell: cat {0}
+  # echo:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - run: ${{ tojson(github) }}
+  #       shell: cat {0}
   dependabot:
     runs-on: ubuntu-latest
     if: github.event.pull_request.user.login == 'dependabot[bot]'
