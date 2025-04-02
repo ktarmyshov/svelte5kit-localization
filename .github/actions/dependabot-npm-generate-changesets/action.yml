@@ -78,7 +78,7 @@ runs:
           fi
           # append to changeset file
           # $DEP_PREV_VERSION & $DEP_NEW_VERSION seem not to be set, so do with if statement for the future: if they are set then add to string, otherwise just say "update $DEP_NAME"
-          if [ -n "$DEP_PREV_VERSION" ] && [ -n "$DEP_NEW_VERSION" ]; then
+          if [ -n "$DEP_PREV_VERSION" ] || [ -n "$DEP_NEW_VERSION" ]; then
             echo "dependabot: update $DEP_NAME from $DEP_PREV_VERSION to $DEP_NEW_VERSION" >> $CHANGESET_FILE
           else
             echo "dependabot: update $DEP_NAME" >> $CHANGESET_FILE
