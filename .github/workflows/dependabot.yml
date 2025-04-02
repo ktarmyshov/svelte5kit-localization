@@ -56,10 +56,13 @@ jobs:
         shell: cat {0}
       - run: |
           echo "ZZZ" > dependencies.json
+          ls -la dependencies.json
           cat dependencies.json
       - run: |
           echo "${{ steps.metadata.outputs.updated-dependencies-json }}" > dependencies.json
+          ls -la dependencies.json
           cat dependencies.json
+          jq -r '.[]' dependencies.json
           exit -1
       # read array from echo steps.dependabot-metadata.outputs.updated-dependencies-json
       - run: |
