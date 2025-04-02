@@ -35,14 +35,14 @@ jobs:
       - id: metadata
         uses: dependabot/fetch-metadata@v2
         with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          github-token: ${{ steps.app-token.outputs.token }}
 
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
           token: ${{ steps.app-token.outputs.token }}
           # Make sure the value of GITHUB_TOKEN will not be persisted in repo's config
-          persist-credentials: false
+          # persist-credentials: false
 
       - run: echo ${{ steps.metadata.outputs.updated-dependencies-json }}
 
