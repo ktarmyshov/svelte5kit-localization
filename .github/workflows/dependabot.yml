@@ -43,7 +43,7 @@ jobs:
           ref: ${{ github.head_ref }}
           token: ${{ steps.app-token.outputs.token }}
           # Make sure the value of GITHUB_TOKEN will not be persisted in repo's config
-          # This fails with the push command TODO: Review
+          # This fails with the push command
           # persist-credentials: false
 
       # TODO: pack these two steps into a single action with output from dependabot/fetch-metadata: .outputs.updated-dependencies-json
