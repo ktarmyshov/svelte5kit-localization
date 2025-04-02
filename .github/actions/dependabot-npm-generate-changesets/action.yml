@@ -33,18 +33,28 @@ runs:
             echo ${dep} | base64 --decode | jq -r ${1}
           }
           PKG_DIR=$(_jq '.directory')
+          echo "PKG_DIR: $PKG_DIR"
           PKG_DIR=${PKG_DIR:1}
+          echo "PKG_DIR: $PKG_DIR"
           PKG_JSON="$PKG_DIR/package.json"
+          echo "PKG_JSON: $PKG_JSON"
           PKG_NAME=$(jq -r '.name' $PKG_JSON)
+          echo "PKG_NAME: $PKG_NAME"
           DEP_NAME=$(_jq '.dependencyName')
+          echo "DEP_NAME: $DEP_NAME"
           DEP_PREV_VERSION=$(_jq '.prevVersion')
+          echo "DEP_PREV_VERSION: $DEP_PREV_VERSION"
           DEP_NEW_VERSION=$(_jq '.newVersion')
+          echo "DEP_NEW_VERSION: $DEP_NEW_VERSION"
           DEP_DEPENDENCY_TYPE=$(_jq '.dependencyType')
+          echo "DEP_DEPENDENCY_TYPE: $DEP_DEPENDENCY_TYPE"
           DEP_UPDATE_TYPE=$(_jq '.updateType') 
+          echo "DEP_UPDATE_TYPE: $DEP_UPDATE_TYPE"
           # version-update:semver-major, version-update:semver-minor, version-update:semver-patch => semver-major, semver-minor, semver-patch
           DEP_SEMVER_TYPE=$(echo $DEP_UPDATE_TYPE | cut -d':' -f2)
+          echo "DEP_SEMVER_TYPE: $DEP_SEMVER_TYPE"
           DEP_CHANGESET_TYPE=$(echo "${{ inputs.version-update-map }}" | jq -r --arg semver_type "$DEP_SEMVER_TYPE" '.[$semver_type]')
-          exit 1
+          echo "DEP_CHANGESET_TYPE: $DEP_CHANGESET_TYPE"
           # changeset file = ./.changeset/<directory-with-replaced-special-symbols>-<package-name>.md
           CHANGESET_FILE="./.changeset/${PKG_DIR//\//-}-${PKG_NAME}.md"
           # if file does not exist, create it
