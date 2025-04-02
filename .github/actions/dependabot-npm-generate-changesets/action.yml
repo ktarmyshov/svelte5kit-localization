@@ -38,6 +38,7 @@ runs:
           echo "PKG_JSON: $PKG_JSON"
           PKG_NAME=$(jq -r '.name' $PKG_JSON)
           echo "PKG_NAME: $PKG_NAME"
+          exit -1
           DEP_NAME=$(_jq '.dependencyName')
           echo "DEP_NAME: $DEP_NAME"
           DEP_PREV_VERSION=$(_jq '.prevVersion')
