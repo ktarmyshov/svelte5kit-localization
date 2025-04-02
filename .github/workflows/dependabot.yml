@@ -47,7 +47,6 @@ jobs:
         shell: cat {0}
       - run: ${{ steps.metadata.outputs.updated-dependencies-json }}
         shell: cat {0}
-      - run: exit 1
 
       - uses: actions/checkout@v4
         with:
