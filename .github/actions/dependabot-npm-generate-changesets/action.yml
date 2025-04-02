@@ -26,6 +26,13 @@ runs:
             echo ${dep} | base64 --decode | jq -r ${1}
           }
           echo "jq: $(_jq '.')"
+          echo "jq: $(_jq '.directory')"
+          echo "jq: $(_jq '.dependencyName')"
+          echo "jq: $(_jq '.prevVersion')"
+          echo "jq: $(_jq '.newVersion')"
+          echo "jq: $(_jq '.dependencyType')"
+          echo "jq: $(_jq '.updateType')"
+          echo "jq: $(_jq '.updateType' | cut -d':' -f2)"
         done
       shell: bash
     - run: exit -1
