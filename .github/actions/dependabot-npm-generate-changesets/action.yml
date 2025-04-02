@@ -79,6 +79,3 @@ runs:
         done
         changesets_json=$(echo $changesets_json | jq -c '.')
         echo "changesets-json=$changesets_json" >> $GITHUB_OUTPUT
-
-    - run: cat .changeset/*.md
-      shell: bash
