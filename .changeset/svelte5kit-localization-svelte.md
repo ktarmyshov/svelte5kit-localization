@@ -22,3 +22,4 @@ dependabot: update svelte
 dependabot: update svelte
 dependabot: update svelte
 dependabot: update svelte
+dependabot: update svelte
