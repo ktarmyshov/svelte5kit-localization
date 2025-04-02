@@ -33,8 +33,12 @@ runs:
           PKG_DIR=$(_jq '.directory')
           echo "PKG_DIR: $PKG_DIR"
           PKG_DIR=${PKG_DIR:1}
+          if [ -z "$PKG_DIR" ]; then
+            # if PKG_DIR is empty, set it to the current directory
+            PKG_DIR="."
+          fi
           echo "PKG_DIR: $PKG_DIR"
-          PKG_JSON="${PKG_DIR}package.json"
+          PKG_JSON="$PKG_DIR/package.json"
           echo "PKG_JSON: $PKG_JSON"
           PKG_NAME=$(jq -r '.name' $PKG_JSON)
           echo "PKG_NAME: $PKG_NAME"
@@ -51,12 +55,17 @@ runs:
           # version-update:semver-major, version-update:semver-minor, version-update:semver-patch => semver-major, semver-minor, semver-patch
           DEP_SEMVER_TYPE=$(echo $DEP_UPDATE_TYPE | cut -d':' -f2)
           echo "DEP_SEMVER_TYPE: $DEP_SEMVER_TYPE"
-          echo ${{ tojson(inputs.version-update-map) }}
-          echo ${{ tojson(inputs.version-update-map) }} | jq -r '.["$DEP_SEMVER_TYPE"]'
           DEP_CHANGESET_TYPE=$(echo ${{ tojson(inputs.version-update-map) }} | jq -r --arg semver_type "$DEP_SEMVER_TYPE" '.[$semver_type]')
           echo "DEP_CHANGESET_TYPE: $DEP_CHANGESET_TYPE"
           # changeset file = ./.changeset/<directory-with-replaced-special-symbols>-<package-name>.md
-          CHANGESET_FILE="./.changeset/${PKG_DIR//\//-}-${PKG_NAME}.md"
+          if [$PKG_DIR == "."]; then
+            CHANGESET_FILE="./.changeset/${PKG_NAME}-${DEP_NAME}.md"
+          else
+            # replace / with - in PKG_DIR
+            PKG_DIR_CHANGESET=${PKG_DIR//\//-}
+            CHANGESET_FILE="./.changeset/${PKG_DIR_CHANGESET}-${PKG_NAME}-${DEP_NAME}.md"
+          fi
+          echo "CHANGESET_FILE: $CHANGESET_FILE"
           # if file does not exist, create it
           # if it exists, append to it
           if [ ! -f $CHANGESET_FILE ]; then
