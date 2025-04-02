@@ -54,8 +54,11 @@ jobs:
 
       - run: ${{ tojson(steps.metadata.outputs.updated-dependencies-json) }}
         shell: cat {0}
-      - run: echo ${{ steps.metadata.outputs.updated-dependencies-json }} > dependencies.json
       - run: |
+          echo "ZZZ" > dependencies.json
+          cat dependencies.json
+      - run: |
+          echo "${{ steps.metadata.outputs.updated-dependencies-json }}" > dependencies.json
           cat dependencies.json
           exit -1
       # read array from echo steps.dependabot-metadata.outputs.updated-dependencies-json
