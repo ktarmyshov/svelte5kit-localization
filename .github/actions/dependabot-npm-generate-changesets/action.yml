@@ -88,7 +88,7 @@ runs:
           echo "changesets-json: $changesets_json"
         done
         changesets_json=$(echo $changesets_json | jq -c '.')
-        echo "changesets-json: $changesets_json"
+        echo "changesets-json: ${{ tojson($changesets_json) }}"
         echo "changesets-json=$changesets_json" >> $GITHUB_OUTPUT
 
     - run: ls -la .changeset
