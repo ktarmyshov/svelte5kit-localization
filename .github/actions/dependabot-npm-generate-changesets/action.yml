@@ -59,7 +59,7 @@ runs:
           if [ -n "$DEP_PREV_VERSION" ] && [ -n "$DEP_NEW_VERSION" ]; then
             echo "dependabot: update $DEP_NAME from $DEP_PREV_VERSION to $DEP_NEW_VERSION" >> $CHANGESET_FILE
           else
-            echo "dependabot: update $DEP_NAME >> $CHANGESET_FILE
+            echo "dependabot: update $DEP_NAME" >> $CHANGESET_FILE
           fi
           # append output - json array of created or updated changeset files
           changesets_json=$(echo $changesets_json | jq --arg file $CHANGESET_FILE '. + [$file]')
