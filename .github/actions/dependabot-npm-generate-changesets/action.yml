@@ -75,7 +75,6 @@ runs:
             echo "$PKG_NAME: $DEP_CHANGESET_TYPE" >> $CHANGESET_FILE
             echo "---" >> $CHANGESET_FILE
             echo "" >> $CHANGESET_FILE
-            echo "" >> $CHANGESET_FILE
           fi
           # append to changeset file
           # $DEP_PREV_VERSION & $DEP_NEW_VERSION seem not to be set, so do with if statement for the future: if they are set then add to string, otherwise just say "update $DEP_NAME"
