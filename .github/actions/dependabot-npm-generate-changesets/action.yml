@@ -90,5 +90,7 @@ runs:
 
     - run: ls -la .changeset
       shell: bash
+    - run: cat .changeset/*.md
+      shell: bash
     - run: exit -1
       shell: bash
