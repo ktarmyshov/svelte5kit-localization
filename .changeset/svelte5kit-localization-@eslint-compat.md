@@ -19,3 +19,4 @@ dependabot: update @eslint/compat
 dependabot: update @eslint/compat
 dependabot: update @eslint/compat
 dependabot: update @eslint/compat
+dependabot: update @eslint/compat
