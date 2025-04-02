@@ -30,6 +30,7 @@ runs:
         # loop through updated-dependencies-json array
         echo "${{ inputs.updated-dependencies-json }}"
         echo "${{ inputs.updated-dependencies-json }}" | jq -r '.[] | @base64'
+        exit 1
         echo "${{ inputs.updated-dependencies-json }}" | jq -r '.[] | @base64' | while read dep; do
           echo "dep: $dep"
           _jq() {
