@@ -58,7 +58,10 @@ jobs:
           echo "ZZZ" > dependencies.json
           ls -la dependencies.json
           cat dependencies.json
-      - run: echo "${{ tojson(steps.metadata.outputs.updated-dependencies-json) }}" > dependencies.json
+      - run: echo "${{ steps.metadata.outputs.updated-dependencies-json }}" > dependencies.json
+      - run: ls -la dependencies.json
+      - run: cat dependencies.json
+      - run: echo ${{ tojson(steps.metadata.outputs.updated-dependencies-json) }} > dependencies.json
       - run: ls -la dependencies.json
       - run: cat dependencies.json
       - run: jq -r '.[]' dependencies.json
