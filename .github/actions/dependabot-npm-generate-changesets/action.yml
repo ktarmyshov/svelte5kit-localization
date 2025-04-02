@@ -24,7 +24,7 @@ runs:
       run: |
         declare changesets_json="[]"
         # loop through updated-dependencies-json array
-        for dep in $(echo ${{ inputs.updated-dependencies-json }} | jq -r '.[] | @base64'); do
+        for dep in $(echo ${{ inputs.updated-dependencies-json }} | jq -r '.[]' | base64); do
           echo "dep: $dep"
           _jq() {
             echo ${dep} | base64 --decode | jq -r ${1}
@@ -34,7 +34,7 @@ runs:
           echo "PKG_DIR: $PKG_DIR"
           PKG_DIR=${PKG_DIR:1}
           echo "PKG_DIR: $PKG_DIR"
-          PKG_JSON="$PKG_DIR/package.json"
+          PKG_JSON="${PKG_DIR}package.json"
           echo "PKG_JSON: $PKG_JSON"
           PKG_NAME=$(jq -r '.name' $PKG_JSON)
           echo "PKG_NAME: $PKG_NAME"
