@@ -85,9 +85,10 @@ runs:
           fi
           # append output - json array of created or updated changeset files
           changesets_json=$(echo $changesets_json | jq --arg file $CHANGESET_FILE '. + [$file]')
+          echo "changesets-json: $changesets_json"
         done
-        echo 'changesets-json=$changesets_json' >> $GITHUB_OUTPUT
         echo 'changesets-json: $changesets_json'
+        echo 'changesets-json=$changesets_json' >> $GITHUB_OUTPUT
 
     - run: ls -la .changeset
       shell: bash
