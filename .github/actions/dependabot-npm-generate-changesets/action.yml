@@ -19,8 +19,8 @@ outputs:
 runs:
   using: "composite"
   steps:
-    # - run: ${{ inputs.updated-dependencies-json }}
-    #   shell: cat {0}
+    - run: ${{ inputs.updated-dependencies-json }}
+      shell: cat {0}
     - run: ${{fromJson(inputs.updated-dependencies-json)}}
       shell: cat {0}
     - run: exit -1
