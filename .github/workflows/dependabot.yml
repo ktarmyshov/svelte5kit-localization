@@ -65,7 +65,7 @@ jobs:
       - run: ls -la dependencies.json
       - run: cat dependencies.json
       - run: jq -r '.[]' dependencies.json
-      - run: echo "${{ steps.metadata.outputs.updated-dependencies-json }}" | jq -r '.[]'
+      - run: echo ${{ tojson(steps.metadata.outputs.updated-dependencies-json) }} | jq -r '.[]'
       - run: exit -1
       # read array from echo steps.dependabot-metadata.outputs.updated-dependencies-json
       - run: |
