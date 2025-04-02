@@ -51,8 +51,8 @@ runs:
           # version-update:semver-major, version-update:semver-minor, version-update:semver-patch => semver-major, semver-minor, semver-patch
           DEP_SEMVER_TYPE=$(echo $DEP_UPDATE_TYPE | cut -d':' -f2)
           echo "DEP_SEMVER_TYPE: $DEP_SEMVER_TYPE"
-          echo "${{ inputs.version-update-map }}"
-          echo "${{ inputs.version-update-map }}" | jq -r '.'
+          echo ${{ tojson(inputs.version-update-map) }}
+          echo ${{ tojson(inputs.version-update-map) }}" | jq -r '.'
           DEP_CHANGESET_TYPE=$(echo "${{ inputs.version-update-map }}" | jq -r --arg semver_type "$DEP_SEMVER_TYPE" '.[$semver_type]')
           echo "DEP_CHANGESET_TYPE: $DEP_CHANGESET_TYPE"
           # changeset file = ./.changeset/<directory-with-replaced-special-symbols>-<package-name>.md
