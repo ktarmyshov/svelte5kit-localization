@@ -29,6 +29,7 @@ runs:
         declare changesets_json="[]"
         # loop through updated-dependencies-json array
         echo "${{ inputs.updated-dependencies-json }}"
+        exit -1
         echo "${{ inputs.updated-dependencies-json }}" | jq -r '.'
         exit -1
         for dep in "${{ inputs.updated-dependencies-json }}" | jq -r '.[]'; do
