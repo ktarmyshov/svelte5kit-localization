@@ -26,7 +26,7 @@ runs:
       # get version-update from dependabot/fetch-metadata and map it to changeset type
       # create changeset file in .changeset directory per updated dependency
       run: |
-        changesets-json="[]"
+        declare changesets_json="[]"
         # loop through updated-dependencies-json array
         echo "${{ inputs.updated-dependencies-json }}" | jq -r '.[] | @base64' | while read dep; do
           _jq() {
@@ -62,6 +62,7 @@ runs:
             echo "dependabot: update $DEP_NAME >> $CHANGESET_FILE
           fi
           # append output - json array of created or updated changeset files
-          changesets-json=$(echo $changesets-json | jq --arg file $CHANGESET_FILE '. + [$file]')
+          changesets_json=$(echo $changesets_json | jq --arg file $CHANGESET_FILE '. + [$file]')
         done
-        echo "changesets-json=$changesets-json" >> $GITHUB_OUTPUT
+        echo "changesets-json=$changesets_json" >> $GITHUB_OUTPUT
+        echo "changesets-json: $changesets_json"
