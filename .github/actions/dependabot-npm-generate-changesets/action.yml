@@ -60,11 +60,11 @@ runs:
           # changeset file = ./.changeset/<directory-with-replaced-special-symbols>-<package-name>.md
           DEP_NAME_CHANGESET=${DEP_NAME//\//-}
           if ["$PKG_DIR" == "."]; then
-            CHANGESET_FILE="./.changeset/${PKG_NAME}-${DEP_NAME}.md"
+            CHANGESET_FILE="./.changeset/${PKG_NAME}-${DEP_NAME_CHANGESET}.md"
           else
             # replace / with - in PKG_DIR
             PKG_DIR_CHANGESET=${PKG_DIR//\//-}
-            CHANGESET_FILE="./.changeset/${PKG_DIR_CHANGESET}-${PKG_NAME}-${DEP_NAME}.md"
+            CHANGESET_FILE="./.changeset/${PKG_DIR_CHANGESET}-${PKG_NAME}-${DEP_NAME_CHANGESET}.md"
           fi
           echo "CHANGESET_FILE: $CHANGESET_FILE"
           # if file does not exist, create it
