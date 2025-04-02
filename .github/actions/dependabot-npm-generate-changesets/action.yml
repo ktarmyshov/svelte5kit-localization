@@ -29,12 +29,11 @@ runs:
         declare changesets_json="[]"
         # loop through updated-dependencies-json array
         echo "${{ inputs.updated-dependencies-json }}"
-        exit 1
-        echo "${{ inputs.updated-dependencies-json }}" | jq -r '.[] | @base64'
-        echo "${{ inputs.updated-dependencies-json }}" | jq -r '.[] | @base64' | while read dep; do
+        echo "${{ inputs.updated-dependencies-json }}" | jq -r '.[]'
+        for dep in "${{ inputs.updated-dependencies-json }}" | jq -r '.[]'; do
           echo "dep: $dep"
           _jq() {
-            echo ${dep} | base64 --decode | jq -r ${1}
+            echo ${dep} | jq -r ${1}
           }
           echo "jq: $(_jq '.')"
           PKG_DIR=$(_jq '.directory')
