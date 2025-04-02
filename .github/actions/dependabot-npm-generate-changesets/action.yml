@@ -6,7 +6,7 @@ description: Add/update changeset files for Dependabot PR.
 inputs:
   updated-dependencies-json:
     required: true
-    description: "JSON with updated dependencies from dependabot/fetch-metadata action"
+    description: "JSON string with updated dependencies from dependabot/fetch-metadata action"
   version-update-map:
     required: false
     description: "Map version updates from dependabot/fetch-metadata action to changeset types"
