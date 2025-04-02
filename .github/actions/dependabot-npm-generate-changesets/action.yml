@@ -21,6 +21,11 @@ runs:
   steps:
     - run: echo ${{ inputs.updated-dependencies-json }} | jq -r '.[]'
       shell: bash
+    - run: |
+        for dep in echo ${{ inputs.updated-dependencies-json }} | jq -r '.[]'; do
+          echo "dep: $dep"
+        done
+      shell: bash
     - run: exit -1
       shell: bash
     - id: generate-changesets
@@ -87,3 +92,6 @@ runs:
         done
         echo "changesets-json=$changesets_json" >> $GITHUB_OUTPUT
         echo "changesets-json: $changesets_json"
+
+    - run: exit -1
+      shell: bash
