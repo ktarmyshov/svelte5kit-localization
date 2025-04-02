@@ -55,7 +55,7 @@ runs:
           # if file does not exist, create it
           # if it exists, append to it
           if [ ! -f $CHANGESET_FILE ]; then
-            echo "File does not exist, creating it"
+            echo "File $CHANGESET_FILE does not exist, creating it"
             echo "---" >> $CHANGESET_FILE
             echo "$PKG_NAME: $DEP_CHANGESET_TYPE" >> $CHANGESET_FILE
             echo "---" >> $CHANGESET_FILE
@@ -69,9 +69,9 @@ runs:
           fi
           # Check if $UPDATE_STRING is already in the file
           if grep -q "$UPDATE_STRING" $CHANGESET_FILE; then
-            echo "Update string already in file, skipping"
+            echo "Update string already in file $CHANGESET_FILE, skipping"
           else
-            echo "Update string not in file, adding it"
+            echo "Update string not in file $CHANGESET_FILE, adding it"
             echo "$UPDATE_STRING" >> $CHANGESET_FILE
             # append output - json array of created or updated changeset files
             changesets_json=$(echo $changesets_json | jq --arg file $CHANGESET_FILE '. + [$file]')
