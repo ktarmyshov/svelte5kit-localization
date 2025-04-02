@@ -19,6 +19,12 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - run: ${{ inputs.updated-dependencies-json }}
+      shell: cat {0}
+    - run: ${{fromJson(inputs.updated-dependencies-json)}}
+      shell: cat {0}
+    - run: exit -1
+      shell: bash
     - id: generate-changesets
       shell: bash
       # scan updated-dependencies-json array from (dependabot/fetch-metadata)
