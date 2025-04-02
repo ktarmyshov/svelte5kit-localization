@@ -12,3 +12,4 @@ dependabot: update eslint-plugin-svelte
 dependabot: update eslint-plugin-svelte
 dependabot: update eslint-plugin-svelte
 dependabot: update eslint-plugin-svelte
+dependabot: update eslint-plugin-svelte
