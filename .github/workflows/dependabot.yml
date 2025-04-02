@@ -43,7 +43,9 @@ jobs:
         uses: dependabot/fetch-metadata@v2
         with:
           github-token: ${{ steps.app-token.outputs.token }}
-      # - run: echo ${{ steps.metadata.outputs.updated-dependencies-json }}
+      - run: ${{ tojson(steps.metadata.outputs.updated-dependencies-json) }}
+        shell: cat {0}
+      - run: exit 1
 
       - uses: actions/checkout@v4
         with:
