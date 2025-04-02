@@ -40,7 +40,7 @@ jobs:
           ref: ${{ github.head_ref }}
           token: ${{ steps.app-token.outputs.token }}
 
-      - uses: ./.github/actions/dependabot-npm-generate-changesets
+      - uses: ktarmyshov/github-actions/dependabot-npm-generate-changesets@5b7970e5403e016da8d9b00305d12dc3ffc430a6
         with:
           updated-dependencies-json: ${{ tojson(steps.metadata.outputs.updated-dependencies-json) }}
 
