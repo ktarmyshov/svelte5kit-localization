@@ -22,6 +22,10 @@ runs:
     - run: |
         for dep in $(echo ${{ inputs.updated-dependencies-json }} | jq -r '.[] | @base64'); do
           echo "dep: $dep"
+          _jq() {
+            echo ${dep} | jq -r ${1}
+          }
+          echo "jq: $(_jq '.')"
         done
       shell: bash
     - run: exit -1
