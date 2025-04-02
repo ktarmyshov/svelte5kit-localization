@@ -70,9 +70,11 @@ runs:
           # if file does not exist, create it
           # if it exists, append to it
           if [ ! -f $CHANGESET_FILE ]; then
+            echo "File does not exist, creating it"
             echo "---" >> $CHANGESET_FILE
             echo "$PKG_NAME: $DEP_CHANGESET_TYPE" >> $CHANGESET_FILE
             echo "---" >> $CHANGESET_FILE
+            echo "" >> $CHANGESET_FILE
             echo "" >> $CHANGESET_FILE
           fi
           # append to changeset file
