@@ -19,10 +19,8 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - run: echo ${{ inputs.updated-dependencies-json }} | jq -r '.[]'
-      shell: bash
     - run: |
-        for dep in echo ${{ inputs.updated-dependencies-json }} | jq -r '.[]'; do
+        for dep in ${{ inputs.updated-dependencies-json }} | jq -r '.[]'; do
           echo "dep: $dep"
         done
       shell: bash
