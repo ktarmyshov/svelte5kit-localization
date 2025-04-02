@@ -10,3 +10,4 @@ dependabot: update @sveltejs/adapter-auto
 dependabot: update @sveltejs/adapter-auto
 dependabot: update @sveltejs/adapter-auto
 dependabot: update @sveltejs/adapter-auto
+dependabot: update @sveltejs/adapter-auto
