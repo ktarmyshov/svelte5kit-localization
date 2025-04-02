@@ -79,16 +79,20 @@ runs:
           # append to changeset file
           # $DEP_PREV_VERSION & $DEP_NEW_VERSION seem not to be set, so do with if statement for the future: if they are set then add to string, otherwise just say "update $DEP_NAME"
           if [ -n "$DEP_PREV_VERSION" ] || [ -n "$DEP_NEW_VERSION" ]; then
-            echo "dependabot: update $DEP_NAME from $DEP_PREV_VERSION to $DEP_NEW_VERSION" >> $CHANGESET_FILE
+            UPDATE_STRING="dependabot: update $DEP_NAME from $DEP_PREV_VERSION to $DEP_NEW_VERSION"
           else
-            echo "dependabot: update $DEP_NAME" >> $CHANGESET_FILE
+            UPDATE_STRING="dependabot: update $DEP_NAME"
           fi
-          # append output - json array of created or updated changeset files
-          changesets_json=$(echo $changesets_json | jq --arg file $CHANGESET_FILE '. + [$file]')
-          echo "changesets-json: $changesets_json"
+          # Check if $UPDATE_STRING is already in the file
+          if grep -q "$UPDATE_STRING" $CHANGESET_FILE; then
+            echo "Update string already in file, skipping"
+          else
+            echo "$UPDATE_STRING" >> $CHANGESET_FILE
+            # append output - json array of created or updated changeset files
+            changesets_json=$(echo $changesets_json | jq --arg file $CHANGESET_FILE '. + [$file]')
+          fi
         done
         changesets_json=$(echo $changesets_json | jq -c '.')
-        echo "changesets-json: $changesets_json"
         echo "changesets-json=$changesets_json" >> $GITHUB_OUTPUT
 
     - run: ls -la .changeset
