@@ -1,8 +1,8 @@
-[![CI](https://github.com/ktarmyshov/svelte5kit-localization/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/ktarmyshov/svelte5kit-localization/actions/workflows/ci.yml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ktarmyshov_svelte-adapter-azure-swa&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ktarmyshov_svelte-adapter-azure-swa)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=ktarmyshov_svelte-adapter-azure-swa&metric=bugs)](https://sonarcloud.io/summary/new_code?id=ktarmyshov_svelte-adapter-azure-swa)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=ktarmyshov_svelte-adapter-azure-swa&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=ktarmyshov_svelte-adapter-azure-swa)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=ktarmyshov_svelte-adapter-azure-swa&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=ktarmyshov_svelte-adapter-azure-swa)
+[![CI](https://github.com/kt-public/svelte5kit-localization/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/kt-public/svelte5kit-localization/actions/workflows/ci.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kt-public_svelte5kit-localization&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=kt-public_svelte5kit-localization)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=kt-public_svelte5kit-localization&metric=bugs)](https://sonarcloud.io/summary/new_code?id=kt-public_svelte5kit-localization)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=kt-public_svelte5kit-localization&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=kt-public_svelte5kit-localization)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=kt-public_svelte5kit-localization&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=kt-public_svelte5kit-localization)
 
 # Summary
 
