@@ -20,7 +20,7 @@ jobs:
   release:
     # prevents this action from running on forks
     if: >-
-      github.repository == 'ktarmyshov/svelte5kit-localization' && 
+      github.repository == 'kt-public/svelte5kit-localization' && 
       github.ref == 'refs/heads/master' && 
       github.event.workflow_run.event == 'push' && 
       github.event.workflow_run.conclusion == 'success'
