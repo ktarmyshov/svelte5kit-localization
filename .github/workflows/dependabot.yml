@@ -17,7 +17,7 @@ jobs:
   #           exit 1
   #         fi
   dependabot:
-    uses: kt-public/github-actions/.github/workflows/dependabot.yml@a04c41924253afe9f74c5bd9e3268bb54046c7f5
+    uses: kt-public/github-actions/.github/workflows/dependabot.yml@f22d9e9d02846d781e22df70c139174c3068db01
     secrets:
       WORKFLOW_APP_ID: ${{ secrets.WORKFLOW_APP_ID }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
