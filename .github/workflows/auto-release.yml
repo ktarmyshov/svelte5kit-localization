@@ -71,6 +71,11 @@ jobs:
             /minor/ { print 2, $0 }     
             /major/ { print 3, $0 }     
           ' | sort -nr | head -n 1 | awk '{ print $3 }')
+          if [ -z "$highest_version" ]; then
+            echo "No changeset version found"
+            highest_version="none"
+          fi
+          echo "Highest version: $highest_version"
           echo "highest_version=$highest_version" >> "$GITHUB_OUTPUT"
 
       # - name: Enable auto-merge for Changeset PR
