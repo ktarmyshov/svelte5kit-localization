@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.1.16
+
+### Patch Changes
+
+- 77da70d: dependabot: bump vite from 6.2.3 to 6.2.4
+- 936ea41: dependabot: update @eslint/compat
+- 936ea41: dependabot: update @sveltejs/adapter-auto
+- 936ea41: dependabot: update @sveltejs/kit
+- 912e289: dependabot: update cypress
+- c8d42fb: dependabot: update dompurify
+- 936ea41: dependabot: update eslint-plugin-svelte
+- 5cbf734: dependabot: update publint
+- a313630: dependabot: update svelte-check
+- ea04ac7: dependabot: update svelte-check
+- 936ea41: dependabot: update svelte
+- 936ea41: dependabot: update typescript-eslint
+- c8d42fb: dependabot: update vite
+
 ## 0.1.15
 
 ### Patch Changes
