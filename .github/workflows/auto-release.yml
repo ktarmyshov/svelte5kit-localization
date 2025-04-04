@@ -41,7 +41,7 @@ jobs:
           ref: ${{ github.event.repository.default_branch }}
           fetch-depth: 0
 
-      - name: Check for open PR
+      - name: Check for the open Changeset PR
         id: check-pr
         run: |
           pr_number=$(gh pr list --base ${{ github.event.repository.default_branch }} --head changeset-release/${{ github.event.repository.default_branch }} --json number --jq '.[0].number')
@@ -55,7 +55,7 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
-      - name: Check for the highes changeset version
+      - name: Check for the highest Changeset version
         id: check-changeset
         run: |
           # Get the highest version in .changeset/*.md files
