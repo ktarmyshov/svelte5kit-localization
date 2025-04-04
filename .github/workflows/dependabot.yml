@@ -18,7 +18,7 @@ jobs:
   #         fi
   dependabot:
     if: github.event.pull_request.user.login == 'dependabot[bot]'
-    uses: kt-public/github-actions/.github/workflows/dependabot.yml@70331336ca6071f9ab280af77408e1dbd531804b
+    uses: kt-public/github-actions/.github/workflows/dependabot.yml@5895d1e5e1a5f71cb9e3d19aea8826d95e1c29e7
     secrets:
       WORKFLOW_APP_ID: ${{ secrets.WORKFLOW_APP_ID }}
       WORKFLOW_APP_PRIVATE_KEY: ${{ secrets.WORKFLOW_APP_PRIVATE_KEY }}
