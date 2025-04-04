@@ -1,4 +1,4 @@
-name: Auto Release
+name: Changeset Auto Release
 
 on:
   schedule:
@@ -52,6 +52,8 @@ jobs:
             echo "Open PR found: $pr_number"
             echo "pr_number=$pr_number" >> "$GITHUB_OUTPUT"
           fi
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
 
       - name: Checkout default branch
         uses: actions/checkout@v4
@@ -71,11 +73,11 @@ jobs:
           ' | sort -nr | head -n 1 | awk '{ print $3 }')
           echo "highest_version=$highest_version" >> "$GITHUB_OUTPUT"
 
-      # - name: Merge PR if patch
+      # - name: Enable auto-merge for Changeset PR
       #   if: steps.check-pr.outputs.pr_number != '0' && steps.check-changeset.outputs.highest_version == 'patch'
       #   run: |
       #     pr_number=${{ steps.check-pr.outputs.pr_number }}
       #     echo "Merging PR #$pr_number"
       #     gh pr merge $pr_number --auto --squash --delete-branch
       #   env:
-      #     GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+      #     GH_TOKEN: ${{ steps.app-token.outputs.token }}
