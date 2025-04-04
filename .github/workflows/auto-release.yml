@@ -1,0 +1,81 @@
+name: Auto Release
+
+on:
+  schedule:
+    # - cron: "0 0 1 * *" # At 00:00 on day-of-month 1 (UTC)
+    # Just for testing purposes - run every 5 minutes
+    - cron: "*/5 * * * *" # Every 5 minutes
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  # echo:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - run: ${{ tojson(github) }}
+  #       shell: cat {0}
+  merge-release-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.WORKFLOW_APP_ID }}
+          private-key: ${{ secrets.WORKFLOW_APP_PRIVATE_KEY }}
+      - id: get-user-id
+        run: echo "user-id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      - run: |
+          git config --global user.name '${{ steps.app-token.outputs.app-slug }}[bot]'
+          git config --global user.email '${{ steps.get-user-id.outputs.user-id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com'
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      # Find open PR from changeset-release/<default branch> to <default branch>
+      # If exists, checkout default branch
+      # check that changeset version is patch
+      #   highest version in .changeset/*.md files in master <some-package-name>: patch (could be minor or major)
+      # this can be done by checking .changeset/*.md (except README.md) in master (before merge)
+      # If this is patch - merge PR
+      # If PR does not exist or is not patch - do nothing
+      - name: Check for open PR
+        id: check-pr
+        run: |
+          pr_number=$(gh pr list --base ${{ github.event.repository.default_branch }} --head changeset-release/${{ github.event.repository.default_branch }} --json number --jq '.[0].number')
+          if [ -z "$pr_number" ]; then
+            echo "No open PR found"
+            echo "pr_number=0" >> "$GITHUB_OUTPUT"
+          else
+            echo "Open PR found: $pr_number"
+            echo "pr_number=$pr_number" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout default branch
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+
+      - name: Check for the highes changeset version
+        id: check-changeset
+        run: |
+          # Get the highest version in .changeset/*.md files
+          highest_version=$(ls .changeset/*.md | grep -v README.md | xargs -I {} sh -c 'cat {} | grep -E "(patch|minor|major)"' | awk '
+            /patch/ { print 1, $0 }     
+            /minor/ { print 2, $0 }     
+            /major/ { print 3, $0 }     
+          ' | sort -nr | head -n 1 | awk '{ print $3 }')
+          echo "highest_version=$highest_version" >> "$GITHUB_OUTPUT"
+
+      - name: Merge PR if patch
+        if: steps.check-pr.outputs.pr_number != '0' && steps.check-changeset.outputs.highest_version == 'patch'
+        run: |
+          pr_number=${{ steps.check-pr.outputs.pr_number }}
+          echo "Merging PR #$pr_number"
+          gh pr merge $pr_number --auto --squash --delete-branch
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
