@@ -34,13 +34,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
-      # Find open PR from changeset-release/<default branch> to <default branch>
-      # If exists, checkout default branch
-      # check that changeset version is patch
-      #   highest version in .changeset/*.md files in master <some-package-name>: patch (could be minor or major)
-      # this can be done by checking .changeset/*.md (except README.md) in master (before merge)
-      # If this is patch - merge PR
-      # If PR does not exist or is not patch - do nothing
+      - name: Checkout default branch
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+
       - name: Check for open PR
         id: check-pr
         run: |
@@ -54,13 +54,6 @@ jobs:
           fi
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-
-      - name: Checkout default branch
-        uses: actions/checkout@v4
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-          ref: ${{ github.event.repository.default_branch }}
-          fetch-depth: 0
 
       - name: Check for the highes changeset version
         id: check-changeset
