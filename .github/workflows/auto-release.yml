@@ -1,4 +1,4 @@
-name: Changeset Auto Release
+name: Changeset auto-release
 
 on:
   schedule:
