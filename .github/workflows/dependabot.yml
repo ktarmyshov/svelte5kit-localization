@@ -11,11 +11,6 @@ jobs:
   #   steps:
   #     - run: ${{ tojson(github) }}
   #       shell: cat {0}
-  #     - run: |
-  #         if [ -z ${{secrets.WORKFLOW_APP_ID }} ]; then
-  #           echo "WORKFLOW_APP_ID is not set"
-  #           exit 1
-  #         fi
   dependabot:
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     uses: kt-public/github-actions/.github/workflows/wc-dependabot.yml@v1
