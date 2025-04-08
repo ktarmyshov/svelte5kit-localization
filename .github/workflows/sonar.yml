@@ -3,9 +3,9 @@ name: "SonarQube Scan"
 on:
   workflow_call:
   # push:
-  #   branches: ["master"]
+  #   branches: ["main"]
   # pull_request:
-  #   branches: ["master"]
+  #   branches: ["main"]
   schedule:
     - cron: "37 9 * * 4"
 
