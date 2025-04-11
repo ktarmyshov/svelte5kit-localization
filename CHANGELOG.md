@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.1.17
+
+### Patch Changes
+
+- b0c0308: dependabot: update @eslint/js
+- b0c0308: dependabot: update @sveltejs/kit
+- 65a77a3: dependabot: update @sveltejs/kit
+- b8beb7a: dependabot: update cypress
+- b0c0308: dependabot: update eslint
+- 9db7ebc: dependabot: update eslint-config-prettier
+- 65a77a3: dependabot: update eslint-plugin-cypress
+- 9db7ebc: dependabot: update publint
+- 1aab090: dependabot: update svelte
+- 264487d: dependabot: update svelte
+- b8beb7a: dependabot: update svelte
+- 65a77a3: dependabot: update svelte
+- 9db7ebc: dependabot: update svelte
+- 1aab090: dependabot: update typescript
+- 264487d: dependabot: update typescript-eslint
+- 9db7ebc: dependabot: update vite
+
 ## 0.1.16
 
 ### Patch Changes
